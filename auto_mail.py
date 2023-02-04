@@ -7,14 +7,14 @@ def mail_bot(path):
     # Connection with the server
     server = smtplib.SMTP(host='smtp.gmail.com', port=587)
     server.starttls()
-    server.login('2020ca30f@sigce.edu.in', 'pwhgdhumldeybbae')
+    server.login('XXXXXXX@gmail.com', 'password') ## for server login and password read README.md
 
     # Creation of the MIMEMultipart Object
     message = MIMEMultipart()
 
     # Setup of MIMEMultipart Object Header
-    message['From'] = 'khansf466@gmail.com'
-    message['To'] = '2020ca30f@sigce.edu.in'
+    message['From'] = 'SenderMail@gmail.com'
+    message['To'] = 'ReceiverMail@gmail.com'
     message['Subject'] = "weapon detected in your property"
 
     # Creation of a MIMEText Part
