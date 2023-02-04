@@ -136,8 +136,8 @@ def run(
                         OTHERWISE KEEP IT AS COMMENT.
                         '''
                         #myScreenshot = pyautogui.screenshot() 
-                        #myScreenshot.save(r'C:\Users\A M D\PycharmProjects\pythonProject2\yolov5\s2.jpg')
-                        #path = r'C:\Users\A M D\PycharmProjects\pythonProject2\yolov5\s2.jpg'
+                        #myScreenshot.save(r'give a path to save image')
+                        #path = r'give the same path here'
                         mail_bot(path)
                         #time.sleep(10)  ##for stoping the bot to send mail continuously
 
