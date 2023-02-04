@@ -35,8 +35,8 @@ Clone repo and install [requirements.txt](https://github.com/ultralytics/yolov5/
 [**PyTorch>=1.7**](https://pytorch.org/get-started/locally/).
 
 ```bash
-git clone https://github.com/ultralytics/yolov5  # clone
-cd yolov5
+git clone https://github.com/K-saif/Weapon-Detection-Mail-Alerts.git  # clone
+cd Weapon-Detection-Mail-Alerts
 pip install -r requirements.txt  # install
 ```
 </details>
@@ -48,7 +48,7 @@ pip install -r requirements.txt  # install
 For sending automatic Email first we need to turn on 2-step verification to get a 16-character password that we can use to log in to Gmail using Python, follow the steps in this [Doc file](https://drive.google.com/file/d/1yLKMochNeVhoaeUE0a09QvECEYpjoBbH/view?usp=share_link).
 
 **step-2:**
-After this paste the password in the auto_mail.py
+Paste that password in the [auto_mail.py](https://github.com/K-saif/Weapon-Detection-Mail-Alerts/blob/bcd0e3f60c66db6210600df0eef02bed06b659f4/auto_mail.py)
 
 
 
@@ -70,14 +70,15 @@ Note: provide file name and path properly
 
 **Graphs:**
 
+<kbd>
 <img width="800" src="https://user-images.githubusercontent.com/110802306/216755099-15837611-b1bc-47af-9a2b-da78716a3fba.png">
-
+</kbd>
 
 **Output:**
 
-
+<kbd>
 <img width="600" src="https://user-images.githubusercontent.com/110802306/216756077-d4a55c94-d15d-4b80-a179-72f89c34ab15.jpg">
-
+</kbd>
 </details>
 
 
