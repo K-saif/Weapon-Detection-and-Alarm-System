@@ -48,12 +48,10 @@ pip install -r requirements.txt  # install
 For sending automatic Email first we need to turn on 2-step verification to get a 16-character password that we can use to log in to Gmail using Python, follow the steps in this [Doc file](https://drive.google.com/file/d/1yLKMochNeVhoaeUE0a09QvECEYpjoBbH/view?usp=share_link).
 
 **step-2:**
-Paste that password in the [auto_mail.py](https://github.com/K-saif/Weapon-Detection-Mail-Alerts/blob/bcd0e3f60c66db6210600df0eef02bed06b659f4/auto_mail.py)
-
-
-
-    
+Copy and paste that password in the [auto_mail.py](https://github.com/K-saif/Weapon-Detection-Mail-Alerts/blob/bcd0e3f60c66db6210600df0eef02bed06b659f4/auto_mail.py)
+ 
 </details>
+
 
 <details>
 <summary>Training</summary>
@@ -93,14 +91,14 @@ python detect.py --source 0  # webcam
                           vid.mp4  # video
                           path/  # directory
                           'path/*.jpg'  # glob
-                          'https://youtu.be/Zgi9g1ksQHc'  # YouTube
-                          'rtsp://example.com/media.mp4'  # RTSP, RTMP, HTTP stream
+                          'https://youtu.be/'  # YouTube
+                          'rtsp://abc.com/weapon.mp4'  # RTSP, RTMP, HTTP stream
 ```
 </details>
 
 <details>
 <summary>Detection</summary>
-For training, use below command
+For detection, use below command
 
 ```bash
 python detect.py --weights best.pt --img 640 --conf 0.25 --source image.jpg
@@ -121,14 +119,7 @@ Get started in seconds with our verified environments. Click each icon below for
   <a href="https://www.kaggle.com/ultralytics/yolov5">
     <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-kaggle-small.png" width="10%" /></a>
   <img src="https://github.com/ultralytics/assets/raw/master/social/logo-transparent.png" width="5%" alt="" />
-  <a href="https://hub.docker.com/r/ultralytics/yolov5">
-    <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-docker-small.png" width="10%" /></a>
-  <img src="https://github.com/ultralytics/assets/raw/master/social/logo-transparent.png" width="5%" alt="" />
-  <a href="https://github.com/ultralytics/yolov5/wiki/AWS-Quickstart">
-    <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-aws-small.png" width="10%" /></a>
-  <img src="https://github.com/ultralytics/assets/raw/master/social/logo-transparent.png" width="5%" alt="" />
-  <a href="https://github.com/ultralytics/yolov5/wiki/GCP-Quickstart">
-    <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-gcp-small.png" width="10%" /></a>
+  
 </div>
 
 
