@@ -1,30 +1,3 @@
-# YOLOv5 🚀 by Ultralytics, GPL-3.0 license
-"""
-Run YOLOv5 detection inference on images, videos, directories, globs, YouTube, webcam, streams, etc.
-
-Usage - sources:
-    $ python detect.py --weights yolov5s.pt --source 0                               # webcam
-                                                     img.jpg                         # image
-                                                     vid.mp4                         # video
-                                                     path/                           # directory
-                                                     'path/*.jpg'                    # glob
-                                                     'https://youtu.be/Zgi9g1ksQHc'  # YouTube
-                                                     'rtsp://example.com/media.mp4'  # RTSP, RTMP, HTTP stream
-
-Usage - formats:
-    $ python detect.py --weights yolov5s.pt                 # PyTorch
-                                 yolov5s.torchscript        # TorchScript
-                                 yolov5s.onnx               # ONNX Runtime or OpenCV DNN with --dnn
-                                 yolov5s.xml                # OpenVINO
-                                 yolov5s.engine             # TensorRT
-                                 yolov5s.mlmodel            # CoreML (macOS-only)
-                                 yolov5s_saved_model        # TensorFlow SavedModel
-                                 yolov5s.pb                 # TensorFlow GraphDef
-                                 yolov5s.tflite             # TensorFlow Lite
-                                 yolov5s_edgetpu.tflite     # TensorFlow Edge TPU
-                                 yolov5s_paddle_model       # PaddlePaddle
-"""
-
 import argparse
 import os
 import platform
@@ -46,41 +19,7 @@ from utils.general import (LOGGER, Profile, check_file, check_img_size, check_im
 from utils.plots import Annotator, colors, save_one_box
 from utils.torch_utils import select_device, smart_inference_mode
 import pyautogui
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
-from email.mime.text import MIMEText
-import time
-
-def mail_bot(path):
-    # Connection with the server
-    server = smtplib.SMTP(host='smtp.gmail.com', port=587)
-    server.starttls()
-    server.login('2020ca30f@sigce.edu.in', 'pwhgdhumldeybbae')
-
-    # Creation of the MIMEMultipart Object
-    message = MIMEMultipart()
-
-    # Setup of MIMEMultipart Object Header
-    message['From'] = 'khansf466@gmail.com'
-    message['To'] = 'bhaveshbhalerao98@gmail.com'
-    message['Subject'] = "weapon detected in your property"
-
-    # Creation of a MIMEText Part
-    textPart = MIMEText("pistol detected.\n\nAttached is the image of detected weapon", 'plain')
-
-    # Creation of a MIMEApplication Part
-    filename = path
-    filePart = MIMEApplication(open(filename, "rb").read(), Name=filename)
-    filePart["Content-Disposition"] = 'attachment; filename="%s' % filename
-
-    # Parts attachment
-    message.attach(textPart)
-    message.attach(filePart)
-
-    # Send Email and close connection
-    server.send_message(message)
-    server.quit()
+from auto_mail import mail_bot
 
 @smart_inference_mode()
 def run(
@@ -191,11 +130,16 @@ def run(
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
                     if conf > 0.8:
-                        myScreenshot = pyautogui.screenshot()
-                        myScreenshot.save(r'C:\Users\A M D\PycharmProjects\pythonProject2\yolov5\s2.jpg')
-                        path = r'C:\Users\A M D\PycharmProjects\pythonProject2\yolov5\s2.jpg'
+                        ''' 
+                        FOR BELOW 3 LINES,
+                        ONLY USE WHEN YOU ARE TAKING INPUT AS LIVE DATA FROM CAM IN THE FORM OF VIDEO.
+                        OTHERWISE KEEP IT AS COMMENT.
+                        '''
+                        #myScreenshot = pyautogui.screenshot() 
+                        #myScreenshot.save(r'C:\Users\A M D\PycharmProjects\pythonProject2\yolov5\s2.jpg')
+                        #path = r'C:\Users\A M D\PycharmProjects\pythonProject2\yolov5\s2.jpg'
                         mail_bot(path)
-                        #time.sleep(10)
+                        #time.sleep(10)  ##for stoping the bot to send mail continuously
 
                     if save_txt:  # Write to file
                         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
