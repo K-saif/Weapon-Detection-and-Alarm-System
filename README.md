@@ -130,6 +130,11 @@ We love your input! We want to make contributing to YOLOv5 as easy and transpare
 <!-- SVG image from https://opencollective.com/ultralytics/contributors.svg?width=990 -->
 <a href="https://github.com/ultralytics/yolov5/graphs/contributors"><img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/image-contributors-1280.png" /></a>
 
+<a href = "https://github.com/K-saif/Weapon-Detection-Mail-Alerts/graphs/contributors">
+  <img src = "https://contrib.rocks/image?repo = K-saif/Weapon-Detection-Mail-Alerts">
+</a>
+
+
 ## <div align="center">Contact</div>
 
 For YOLOv5 bugs and feature requests please visit [GitHub Issues](https://github.com/ultralytics/yolov5/issues). For business inquiries or
