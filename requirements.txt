@@ -1,43 +1,33 @@
-# YOLOv5 requirements
-# Usage: pip install -r requirements.txt
-
-# Base ----------------------------------------
-matplotlib>=3.2.2
-numpy>=1.18.5
-opencv-python>=4.1.1
-Pillow>=7.1.2
-PyYAML>=5.3.1
-requests>=2.23.0
-scipy>=1.4.1
-torch>=1.7.0
-torchvision>=0.8.1
-tqdm>=4.64.0
-# protobuf<=3.20.1  # https://github.com/ultralytics/yolov5/issues/8012
-
-# Logging -------------------------------------
-tensorboard>=2.4.1
-# wandb
-# clearml
-
-# Plotting ------------------------------------
-pandas>=1.1.4
-seaborn>=0.11.0
-
-# Export --------------------------------------
-# coremltools>=5.2  # CoreML export
-# onnx>=1.9.0  # ONNX export
-# onnx-simplifier>=0.4.1  # ONNX simplifier
-# nvidia-pyindex  # TensorRT export
-# nvidia-tensorrt  # TensorRT export
-# scikit-learn==0.19.2  # CoreML quantization
-# tensorflow>=2.4.1  # TFLite export (or tensorflow-cpu, tensorflow-aarch64)
-# tensorflowjs>=3.9.0  # TF.js export
-# openvino-dev  # OpenVINO export
-
-# Extras --------------------------------------
-ipython  # interactive notebook
-psutil  # system utilization
-thop>=0.1.1  # FLOPs computation
-# albumentations>=1.0.3
-# pycocotools>=2.0  # COCO mAP
-# roboflow
+albumentations==1.3.0
+comet_ml==3.32.0
+coremltools==6.2
+Flask==1.1.4
+ipython==8.9.0
+matplotlib==3.5.1
+numpy==1.24.1
+onnx==1.13.0
+onnxruntime==1.13.1
+onnxsim==0.4.13
+opencv_python_headless==4.5.5.64
+openvino==2022.3.0
+paddle==1.0.2
+pafy==0.5.5
+pandas==1.4.0
+Pillow==9.4.0
+psutil==5.9.1
+PyAutoGUI==0.9.53
+pycocotools==2.0.6
+PyYAML==6.0
+requests==2.27.1
+scipy==1.8.0
+seaborn==0.11.2
+setuptools==65.4.1
+tensorflow==2.8.4
+tensorflowjs==4.2.0
+tensorrt==8.5.3.1
+tflite_runtime==2.11.0
+thop==0.1.1.post2209072238
+torch==1.13.1
+torchvision==0.14.1
+tqdm==4.64.0
+x2paddle==1.4.0
