@@ -44,12 +44,17 @@ pip install -r requirements.txt  # install
 <details open>
 <summary>Mail Bot</summary>
 
+
 **Step-1:**
-For sending automatic Email first we need to turn on 2-step verification to get a 16-character password that we can use to log in to Gmail using Python, follow the steps in this [Doc file](https://drive.google.com/file/d/1yLKMochNeVhoaeUE0a09QvECEYpjoBbH/view?usp=share_link).
+For sending automatic Email first we need to turn on 2-step verification to get a 16 character password that we can use to log in to Gmail using Python, follow the steps in this [Doc file](https://drive.google.com/file/d/1yLKMochNeVhoaeUE0a09QvECEYpjoBbH/view?usp=share_link).
 
 **step-2:**
 Copy and paste that password in the [auto_mail.py](https://github.com/K-saif/Weapon-Detection-Mail-Alerts/blob/bcd0e3f60c66db6210600df0eef02bed06b659f4/auto_mail.py)
- 
+
+<kbd>
+<img align="left" width="300" height="300" src="https://user-images.githubusercontent.com/110802306/216804975-514c8388-5537-49bd-b4af-706d57198b3f.png">
+</kbd>
+
 </details>
 
 
@@ -61,6 +66,14 @@ For training, use below command
 python train.py --img 640 --batch 16 --epochs 30 --data custom_data.yaml --weights '' --cache
 ```
 Note: provide file name and path properly
+
+
+<kbd>
+<img align="left" width="300" height="300" src="https://user-images.githubusercontent.com/110802306/216806567-8c9ff57e-b891-44e8-b527-585b1f019c9e.png">
+</kbd>
+
+
+
 </details>
 
 <details>
