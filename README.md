@@ -121,7 +121,7 @@ Note: provide file name and path properly
 Get started in seconds with our verified environments. Click each icon below for details.
 
 <div align="center">
-  <a href="https://colab.research.google.com/github/ultralytics/yolov5/blob/master/tutorial.ipynb">
+  <a href="https://colab.research.google.com/drive/1u9rAhzFOoPc7SD-XDmrhU7Rv0U3lkg7B?usp=share_link">
     <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-colab-small.png" width="10%" /></a>
   <img src="https://github.com/ultralytics/assets/raw/master/social/logo-transparent.png" width="5%" alt="" />
   <a href="https://www.kaggle.com/ultralytics/yolov5">
