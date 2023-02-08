@@ -5,7 +5,7 @@
   **Open in**
   <br>
   <div>
-    <a href="https://drive.google.com/file/d/16M87qDLoy1hoopnIlVdSU45RO7w2jhHO/view?usp=sharing"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+    <a href="https://colab.research.google.com/drive/17WiLvBjIB8T83OQGJcaTn_e7aLsNXDh0?usp=share_link"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
     <a href="https://www.kaggle.com/saifkhan04/weapon-detection-mail-alerts"><img src="https://kaggle.com/static/images/open-in-kaggle.svg" alt="Open In Kaggle"></a>
     
   </div>
