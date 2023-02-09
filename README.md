@@ -23,7 +23,7 @@
 ## <div align="center">Quick Start Examples</div>
 
 <details open>
-<summary>Install</summary>
+<summary><strong>Install</strong></summary>
 
 Clone repo and install [requirements.txt](https://github.com/ultralytics/yolov5/blob/master/requirements.txt) in a
 [**Python>=3.7.0**](https://www.python.org/) environment, including
@@ -37,7 +37,7 @@ pip install -r requirements.txt  # install
 </details>
 
 <details open>
-<summary>Mail Bot</summary>
+<summary><strong>Mail Bot</strong></summary>
 
 
 **Step-1:**
@@ -54,7 +54,7 @@ Copy and paste that password in the [auto_mail.py](https://github.com/K-saif/Wea
 
 
 <details>
-<summary>Training</summary>
+<summary><strong>Training</strong></summary>
 For training, use below command 
 
 ```bash
@@ -72,7 +72,7 @@ Note: provide file name and path properly
 </details>
 
 <details>
-<summary>Training Results</summary>
+<summary><strong>Training Results</strong></summary>
 
 **Graphs:**
 
@@ -89,7 +89,7 @@ Note: provide file name and path properly
 
 
 <details>
-<summary>Inference with detect.py</summary>
+<summary><strong>Inference with detect.py</strong></summary>
 
 `detect.py` runs inference on a variety of sources and saving results to `runs/detect`.
 
@@ -105,7 +105,7 @@ python detect.py --source 0  # webcam
 </details>
 
 <details>
-<summary>Detection</summary>
+<summary><strong>Detection</strong></summary>
 For detection, use below command
 
 ```bash
