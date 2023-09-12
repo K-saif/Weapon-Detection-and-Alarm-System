@@ -1,8 +1,0 @@
-
-train: ../pistols/images/train  # train images (relative to 'path')
-val: ../pistols/images/val  # val images (relative to 'path')
-
-nc: 1
-# Classes
-names: ['pistol']
- 
