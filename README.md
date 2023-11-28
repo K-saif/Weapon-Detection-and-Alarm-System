@@ -109,7 +109,7 @@ python detect.py --source 0  # webcam
 For detection, use below command
 
 ```bash
-python detect.py --weights best.pt --img 640 --conf 0.25 --source image.jpg
+python detect.py --weights best.pt --img 640 --conf 0.5 --source image.jpg
 ```
 Note: provide file name and path properly
 </details>
