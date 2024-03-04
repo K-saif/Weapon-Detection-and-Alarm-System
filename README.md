@@ -41,7 +41,7 @@ pip install -r requirements.txt  # install
 
 
 **Step-1:**
-For sending automatic Email first we need to turn on 2-step verification to get a 16 character password that we can use to log in to Gmail using Python, follow the steps in this [Doc file](https://support.google.com/accounts/answer/185833?hl=en).
+For sending automatic Email first we need to turn on 2-step verification to get a 16 character password that we can use to log in to Gmail using Python, follow the steps [here](https://support.google.com/accounts/answer/185833?hl=en).
 
 **step-2:**
 Copy and paste that password in the [auto_mail.py](https://github.com/K-saif/Weapon-Detection-Mail-Alerts/blob/bcd0e3f60c66db6210600df0eef02bed06b659f4/auto_mail.py)
