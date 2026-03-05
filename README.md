@@ -156,4 +156,4 @@ python main.py --weights best.pt --source 0
 
 ## <div>License</div>
 
-Use according to the licenses of this repository and its dependencies.
+This project is licensed under the [MIT License](LICENSE).
