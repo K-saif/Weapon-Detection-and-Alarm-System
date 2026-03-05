@@ -8,7 +8,7 @@ Real-time weapon detection with tracking, cooldown-based alerts, persistence fil
 
 **Note**: This project initally used yolov5 for detection, now the current repo uses yolov8, yolo11 and yolo26. ignoe yolov5 folder as it is no longer used.
 
-## <div align="center">Quick Start</div>
+## <div>Quick Start</div>
 
 <details open>
 <summary><strong>Install</strong></summary>
@@ -16,7 +16,6 @@ Real-time weapon detection with tracking, cooldown-based alerts, persistence fil
 Create a Python environment (recommended) and install dependencies:
 
 ```bash
-pip install -r yolov5/requirements.txt
 pip install ultralytics opencv-python requests twilio
 ```
 
@@ -56,7 +55,7 @@ The pipeline includes:
 
 </details>
 
-## <div align="center">Project Structure</div>
+## <div>Project Structure</div>
 
 ```text
 main.py
@@ -83,7 +82,7 @@ yolov5/
 - `weapon_detection/runner.py`: end-to-end detection and alert orchestration.
 - `weapon_detection/cli.py`: app startup and logging bootstrap.
 
-## <div align="center">CLI Options</div>
+## <div>CLI Options</div>
 
 ```bash
 python main.py \
@@ -98,7 +97,7 @@ python main.py \
   --workers 4
 ```
 
-## <div align="center">Alert Configuration</div>
+## <div>Alert Configuration</div>
 
 Set environment variables before running:
 
@@ -122,7 +121,7 @@ Set environment variables before running:
 - `ALERT_TWILIO_FROM_NUMBER`
 - `ALERT_TWILIO_TO_NUMBER`
 
-## <div align="center">Examples</div>
+## <div">Examples</div>
 
 Only Email alerts:
 
@@ -148,13 +147,13 @@ set ALERT_TWILIO_TO_NUMBER=+10000000001
 python main.py --weights best.pt --source 0
 ```
 
-## <div align="center">Troubleshooting</div>
+## <div>Troubleshooting</div>
 
 - If `cv2` is missing: `pip install opencv-python`
 - If `ultralytics` is missing: `pip install ultralytics`
 - If Telegram alert is skipped: install `requests` and set Telegram env vars.
 - If SMS alert is skipped: install `twilio` and set Twilio env vars.
 
-## <div align="center">License</div>
+## <div>License</div>
 
 Use according to the licenses of this repository and its dependencies.
