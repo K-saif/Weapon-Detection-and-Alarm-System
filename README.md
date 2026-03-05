@@ -5,6 +5,7 @@
 Real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (Email, Telegram, SMS).
 
 </div>
+**Note:** This project initally used yolov5 for detection, now the current repo uses yolov8, yolo11 and yolo26. ignoe yolov5 folder as it is no longer used.
 
 ## <div align="center">Quick Start</div>
 
