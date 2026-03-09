@@ -9,7 +9,7 @@ from pathlib import Path
 import cv2
 from ultralytics import YOLO
 
-from weapon_detection.channels import EmailChannel, TelegramChannel, TwilioSmsChannel
+from weapon_detection.channels import EmailChannel, TelegramChannel
 from weapon_detection.config import AppConfig
 from weapon_detection.dispatcher import AlertDispatcher
 from weapon_detection.events import AlertEvent
@@ -31,7 +31,6 @@ class WeaponDetectionRunner:
         channels = [
             EmailChannel(self.cfg.email),
             TelegramChannel(self.cfg.telegram),
-            TwilioSmsChannel(self.cfg.sms),
         ]
         self.dispatcher = AlertDispatcher(channels=channels, workers=self.cfg.workers)
         self.tracks = TrackLifecycle(

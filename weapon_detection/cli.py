@@ -14,4 +14,5 @@ def main() -> None:
     )
     args = parse_args()
     config = build_default_config(args)
+    print(f"Configs are\n: {config}")  # for debugging
     WeaponDetectionRunner(config).run()

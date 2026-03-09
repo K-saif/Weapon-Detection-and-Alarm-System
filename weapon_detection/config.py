@@ -5,7 +5,8 @@ from __future__ import annotations
 import argparse
 import os
 from dataclasses import dataclass
-
+from dotenv import load_dotenv
+load_dotenv()  # load .env variables for config
 
 @dataclass(frozen=True)
 class InferenceConfig:
@@ -27,9 +28,9 @@ class EmailConfig:
 
     smtp_server: str = "smtp.gmail.com"
     smtp_port: int = 587
-    sender: str = "youremail@gmail.com"
-    password: str = "your_app_password"
-    receiver: str = "alert_receiver@gmail.com"
+    sender: str = ""
+    password: str = ""
+    receiver: str = ""
 
 
 @dataclass(frozen=True)
@@ -41,23 +42,12 @@ class TelegramConfig:
 
 
 @dataclass(frozen=True)
-class SmsConfig:
-    """Twilio SMS alert configuration."""
-
-    account_sid: str = ""
-    auth_token: str = ""
-    from_number: str = ""
-    to_number: str = ""
-
-
-@dataclass(frozen=True)
 class AppConfig:
     """Application composition configuration."""
 
     inference: InferenceConfig
     email: EmailConfig
     telegram: TelegramConfig
-    sms: SmsConfig
     workers: int = 4
 
 
@@ -71,7 +61,7 @@ def parse_args() -> argparse.Namespace:
         "--alert-classes",
         type=int,
         nargs="+",
-        default=[0, 1],
+        default=[43],
         help="class ids that trigger alerts",
     )
     parser.add_argument(
@@ -120,24 +110,17 @@ def build_default_config(args: argparse.Namespace) -> AppConfig:
     email = EmailConfig(
         smtp_server=os.getenv("ALERT_SMTP_SERVER", "smtp.gmail.com"),
         smtp_port=int(os.getenv("ALERT_SMTP_PORT", "587")),
-        sender=os.getenv("ALERT_EMAIL_SENDER", "youremail@gmail.com"),
-        password=os.getenv("ALERT_EMAIL_PASS", "your_app_password"),
-        receiver=os.getenv("ALERT_EMAIL_RECEIVER", "alert_receiver@gmail.com"),
+        sender=os.getenv("ALERT_EMAIL_SENDER", ""),
+        password=os.getenv("ALERT_EMAIL_PASS", ""),
+        receiver=os.getenv("ALERT_EMAIL_RECEIVER", ""),
     )
     telegram = TelegramConfig(
         bot_token=os.getenv("ALERT_TELEGRAM_BOT_TOKEN", ""),
         chat_id=os.getenv("ALERT_TELEGRAM_CHAT_ID", ""),
     )
-    sms = SmsConfig(
-        account_sid=os.getenv("ALERT_TWILIO_ACCOUNT_SID", ""),
-        auth_token=os.getenv("ALERT_TWILIO_AUTH_TOKEN", ""),
-        from_number=os.getenv("ALERT_TWILIO_FROM_NUMBER", ""),
-        to_number=os.getenv("ALERT_TWILIO_TO_NUMBER", ""),
-    )
     return AppConfig(
         inference=inference,
         email=email,
         telegram=telegram,
-        sms=sms,
         workers=args.workers,
     )

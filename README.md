@@ -2,7 +2,7 @@
 
 # Weapon Detection and Alarm System
 
-Real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (Email, Telegram, SMS).
+Real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (Email, Telegram).
 
 </div>
 
@@ -16,13 +16,12 @@ Real-time weapon detection with tracking, cooldown-based alerts, persistence fil
 Create a Python environment (recommended) and install dependencies:
 
 ```bash
-pip install ultralytics opencv-python requests twilio
+pip install ultralytics opencv-python requests
 ```
 
 > Notes:
 > - `ultralytics` is used by the runtime pipeline in `main.py`.
 > - `requests` is required for Telegram alerts.
-> - `twilio` is required for SMS alerts.
 
 </details>
 
@@ -76,7 +75,7 @@ yolov5/
 
 - `weapon_detection/config.py`: CLI arguments + immutable app config.
 - `weapon_detection/events.py`: alert event dataclass.
-- `weapon_detection/channels.py`: Email, Telegram, and Twilio SMS channels.
+- `weapon_detection/channels.py`: Email and Telegram alert channels.
 - `weapon_detection/dispatcher.py`: async channel fan-out dispatcher.
 - `weapon_detection/tracking.py`: persistence/cooldown/stale track lifecycle.
 - `weapon_detection/runner.py`: end-to-end detection and alert orchestration.
@@ -114,13 +113,6 @@ Set environment variables before running:
 - `ALERT_TELEGRAM_BOT_TOKEN`
 - `ALERT_TELEGRAM_CHAT_ID`
 
-### Twilio SMS
-
-- `ALERT_TWILIO_ACCOUNT_SID`
-- `ALERT_TWILIO_AUTH_TOKEN`
-- `ALERT_TWILIO_FROM_NUMBER`
-- `ALERT_TWILIO_TO_NUMBER`
-
 ## <div>Examples</div>
 
 Only Email alerts:
@@ -132,7 +124,7 @@ set ALERT_EMAIL_RECEIVER=alert_receiver@gmail.com
 python main.py --weights best.pt --source 0
 ```
 
-Email + Telegram + SMS:
+Email + Telegram:
 
 ```bash
 set ALERT_EMAIL_SENDER=youremail@gmail.com
@@ -140,10 +132,6 @@ set ALERT_EMAIL_PASS=your_app_password
 set ALERT_EMAIL_RECEIVER=alert_receiver@gmail.com
 set ALERT_TELEGRAM_BOT_TOKEN=your_bot_token
 set ALERT_TELEGRAM_CHAT_ID=your_chat_id
-set ALERT_TWILIO_ACCOUNT_SID=your_sid
-set ALERT_TWILIO_AUTH_TOKEN=your_token
-set ALERT_TWILIO_FROM_NUMBER=+10000000000
-set ALERT_TWILIO_TO_NUMBER=+10000000001
 python main.py --weights best.pt --source 0
 ```
 
@@ -152,7 +140,6 @@ python main.py --weights best.pt --source 0
 - If `cv2` is missing: `pip install opencv-python`
 - If `ultralytics` is missing: `pip install ultralytics`
 - If Telegram alert is skipped: install `requests` and set Telegram env vars.
-- If SMS alert is skipped: install `twilio` and set Twilio env vars.
 
 ## <div>License</div>
 
