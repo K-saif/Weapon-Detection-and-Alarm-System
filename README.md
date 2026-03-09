@@ -26,6 +26,24 @@ pip install ultralytics opencv-python requests
 </details>
 
 <details open>
+<summary><strong>Setup Alerts</strong></summary>
+
+#### Gmail Setup
+1. Enable **2-Step Verification** in your [Google Account](https://myaccount.google.com/security)
+2. Go to **App Passwords** (search in account settings)
+3. Generate a new app password for "Mail"
+4. Use this 16-character password as `ALERT_EMAIL_PASS`
+
+#### Telegram Setup
+1. Message [@BotFather](https://t.me/BotFather) on Telegram → send `/newbot`
+2. Follow prompts to name your bot and get the **bot token**
+3. Start a chat with your bot (send any message)
+4. Visit `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates`
+5. Find `"chat":{"id":XXXXXX}` — that number is your **chat ID**
+
+</details>
+
+<details open>
 <summary><strong>Run Detection</strong></summary>
 
 Run with webcam:
