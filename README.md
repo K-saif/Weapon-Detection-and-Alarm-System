@@ -41,6 +41,25 @@ pip install ultralytics opencv-python requests
 4. Visit `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates`
 5. Find `"chat":{"id":XXXXXX}` — that number is your **chat ID**
 
+Create a `.env` file in the `weapon_detection/` folder:
+
+```bash
+# weapon_detection/.env
+
+# Email Configuration
+ALERT_SMTP_SERVER=smtp.gmail.com
+ALERT_SMTP_PORT=587
+ALERT_EMAIL_SENDER=youremail@gmail.com
+ALERT_EMAIL_PASS=your_16char_app_password
+ALERT_EMAIL_RECEIVER=alert_receiver@gmail.com
+
+# Telegram Configuration
+ALERT_TELEGRAM_BOT_TOKEN=your_bot_token
+ALERT_TELEGRAM_CHAT_ID=your_chat_id
+```
+
+> **Tip**: Leave a value empty to disable that channel.
+
 </details>
 
 <details open>
@@ -114,56 +133,7 @@ python main.py \
   --workers 4
 ```
 
-## <div>Alert Configuration</div>
 
-Create a `.env` file in the `weapon_detection/` folder:
-
-```bash
-# weapon_detection/.env
-
-# Email Configuration
-ALERT_SMTP_SERVER=smtp.gmail.com
-ALERT_SMTP_PORT=587
-ALERT_EMAIL_SENDER=youremail@gmail.com
-ALERT_EMAIL_PASS=your_16char_app_password
-ALERT_EMAIL_RECEIVER=alert_receiver@gmail.com
-
-# Telegram Configuration
-ALERT_TELEGRAM_BOT_TOKEN=your_bot_token
-ALERT_TELEGRAM_CHAT_ID=your_chat_id
-```
-
-> **Tip**: Leave a value empty to disable that channel.
-
-## <div>Examples</div>
-
-Only Email alerts:
-
-```bash
-# weapon_detection/.env
-ALERT_EMAIL_SENDER=youremail@gmail.com
-ALERT_EMAIL_PASS=your_app_password
-ALERT_EMAIL_RECEIVER=alert_receiver@gmail.com
-```
-
-```bash
-python main.py --weights best.pt --source 0
-```
-
-Email + Telegram:
-
-```bash
-# weapon_detection/.env
-ALERT_EMAIL_SENDER=youremail@gmail.com
-ALERT_EMAIL_PASS=your_app_password
-ALERT_EMAIL_RECEIVER=alert_receiver@gmail.com
-ALERT_TELEGRAM_BOT_TOKEN=your_bot_token
-ALERT_TELEGRAM_CHAT_ID=your_chat_id
-```
-
-```bash
-python main.py --weights best.pt --source 0
-```
 
 ## <div>Troubleshooting</div>
 
