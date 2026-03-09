@@ -29,4 +29,4 @@ __pycache__/
 .env
 venv/
 env/
-.vscode/
+.vscode
