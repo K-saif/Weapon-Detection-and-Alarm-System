@@ -116,40 +116,52 @@ python main.py \
 
 ## <div>Alert Configuration</div>
 
-Set environment variables before running:
+Create a `.env` file in the `weapon_detection/` folder:
 
-### Email
+```bash
+# weapon_detection/.env
 
-- `ALERT_SMTP_SERVER` (default: `smtp.gmail.com`)
-- `ALERT_SMTP_PORT` (default: `587`)
-- `ALERT_EMAIL_SENDER`
-- `ALERT_EMAIL_PASS`
-- `ALERT_EMAIL_RECEIVER`
+# Email Configuration
+ALERT_SMTP_SERVER=smtp.gmail.com
+ALERT_SMTP_PORT=587
+ALERT_EMAIL_SENDER=youremail@gmail.com
+ALERT_EMAIL_PASS=your_16char_app_password
+ALERT_EMAIL_RECEIVER=alert_receiver@gmail.com
 
-### Telegram
+# Telegram Configuration
+ALERT_TELEGRAM_BOT_TOKEN=your_bot_token
+ALERT_TELEGRAM_CHAT_ID=your_chat_id
+```
 
-- `ALERT_TELEGRAM_BOT_TOKEN`
-- `ALERT_TELEGRAM_CHAT_ID`
+> **Tip**: Leave a value empty to disable that channel.
 
 ## <div>Examples</div>
 
 Only Email alerts:
 
 ```bash
-set ALERT_EMAIL_SENDER=youremail@gmail.com
-set ALERT_EMAIL_PASS=your_app_password
-set ALERT_EMAIL_RECEIVER=alert_receiver@gmail.com
+# weapon_detection/.env
+ALERT_EMAIL_SENDER=youremail@gmail.com
+ALERT_EMAIL_PASS=your_app_password
+ALERT_EMAIL_RECEIVER=alert_receiver@gmail.com
+```
+
+```bash
 python main.py --weights best.pt --source 0
 ```
 
 Email + Telegram:
 
 ```bash
-set ALERT_EMAIL_SENDER=youremail@gmail.com
-set ALERT_EMAIL_PASS=your_app_password
-set ALERT_EMAIL_RECEIVER=alert_receiver@gmail.com
-set ALERT_TELEGRAM_BOT_TOKEN=your_bot_token
-set ALERT_TELEGRAM_CHAT_ID=your_chat_id
+# weapon_detection/.env
+ALERT_EMAIL_SENDER=youremail@gmail.com
+ALERT_EMAIL_PASS=your_app_password
+ALERT_EMAIL_RECEIVER=alert_receiver@gmail.com
+ALERT_TELEGRAM_BOT_TOKEN=your_bot_token
+ALERT_TELEGRAM_CHAT_ID=your_chat_id
+```
+
+```bash
 python main.py --weights best.pt --source 0
 ```
 
