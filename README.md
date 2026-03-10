@@ -6,7 +6,7 @@ Real-time weapon detection with tracking, cooldown-based alerts, persistence fil
 
 </div>
 
-**Note**: This project initally used yolov5 for detection, now the current repo supports yolov8, yolo11 and yolo26. ignore yolov5 folder as it is no longer used.
+**Note**: This project initally implemented by using yolov5 for detection, now the current repo supports yolov8, yolo11 and yolo26. ignore yolov5 folder as it is no longer needed.
 
 ## <div>Quick Start</div>
 
