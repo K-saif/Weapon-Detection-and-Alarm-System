@@ -63,18 +63,31 @@ ALERT_TELEGRAM_CHAT_ID=your_chat_id
 </details>
 
 <details open>
+<summary><strong>Supported Inputs</strong></summary>
+
+| Input | `--source` example |
+|---|---|
+| Webcam | `0` (default) |
+| Video file | `path/to/video.mp4` |
+| RTSP stream | `rtsp://user:pass@ip:554/stream` |
+| HTTP stream | `http://ip:8080/video` |
+
+> Single images and image directories are **not** supported — the pipeline requires a continuous frame stream.
+
+</details>
+
+<details open>
 <summary><strong>Run Detection</strong></summary>
 
-Run with webcam:
-
 ```bash
+# Webcam
 python main.py --weights best.pt --source 0 --conf 0.4
-```
 
-Run with video file:
-
-```bash
+# Video file
 python main.py --weights best.pt --source path/to/video.mp4 --conf 0.4
+
+# RTSP camera
+python main.py --weights best.pt --source rtsp://user:pass@192.168.1.10:554/stream
 ```
 
 </details>
