@@ -14,7 +14,7 @@ class InferenceConfig:
 
     source: int | str = 0
     weights: str = ""
-    conf: float = 0.4
+    conf: float = 0.8
     alert_classes: tuple[int, ...] = (0, 1)
     persist_frames: int = 8
     cooldown_seconds: int = 60

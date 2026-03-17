@@ -81,13 +81,13 @@ ALERT_TELEGRAM_CHAT_ID=your_chat_id
 
 ```bash
 # Webcam
-python main.py --weights best.pt --source 0 --conf 0.4
+python main.py --source 0 --conf 0.8
 
 # Video file
-python main.py --weights best.pt --source path/to/video.mp4 --conf 0.4
+python main.py --source path/to/video.mp4 --conf 0.8
 
 # RTSP camera
-python main.py --weights best.pt --source rtsp://user:pass@192.168.1.10:554/stream
+python main.py --source rtsp://user:pass@192.168.1.10:554/stream 
 ```
 
 </details>
@@ -135,9 +135,9 @@ yolov5/
 
 ```bash
 python main.py \
-  --weights best.pt \
+  --weights models/best.pt \
   --source 0 \
-  --conf 0.4 \
+  --conf 0.8 \
   --alert-classes 0 1 \
   --persist-frames 8 \
   --cooldown 60 \
