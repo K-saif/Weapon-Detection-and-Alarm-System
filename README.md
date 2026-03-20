@@ -65,7 +65,7 @@ ALERT_TELEGRAM_CHAT_ID=your_chat_id
 <details open>
 <summary><strong>Supported Inputs</strong></summary>
 
-| Input | `--source` example |
+| Input | `--source` |
 |---|---|
 | Webcam | `0` (default) |
 | Video file | `path/to/video.mp4` |
