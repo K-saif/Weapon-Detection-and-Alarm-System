@@ -14,7 +14,7 @@ from weapon_detection.config import AppConfig
 from weapon_detection.dispatcher import AlertDispatcher
 from weapon_detection.events import AlertEvent
 from weapon_detection.tracking import TrackLifecycle
-
+from weapon_detection.vlm import load_model, query_model
 
 LOGGER = logging.getLogger("weapon-detect")
 
@@ -61,6 +61,7 @@ class WeaponDetectionRunner:
         cap = cv2.VideoCapture(self.cfg.inference.source)
         frame_number = 0
         alert_classes = set(self.cfg.inference.alert_classes)
+        vlm_model, vlm_processor = load_model() if self.cfg.vlm.use_vlm else (None, None)
 
         LOGGER.info("Starting detection with tracking")
 
@@ -103,6 +104,10 @@ class WeaponDetectionRunner:
                         "Weapon detected | track_id=%d frame=%d", track_id, frame_number
                     )
                     self.dispatcher.dispatch(event)
+
+                    vlm_description = query_model(snapshot, vlm_model, vlm_processor) if self.cfg.vlm.use_vlm else None
+                    if vlm_description:
+                        LOGGER.info("VLM description for track_id=%d: %s", track_id, vlm_description)
 
             self.tracks.cleanup(frame_number)
             cv2.imshow("Weapon Detection + Tracking", frame)

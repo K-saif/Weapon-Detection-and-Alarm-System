@@ -2,7 +2,7 @@
 
 # Weapon Detection and Alarm System
 
-Real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (Email, Telegram).
+Real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (Email, Telegram). Also Supports VLM for better insights of the incidents.
 
 </div>
 

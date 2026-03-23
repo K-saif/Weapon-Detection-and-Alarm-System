@@ -20,7 +20,7 @@ class InferenceConfig:
     cooldown_seconds: int = 60
     stale_frames: int = 30
     output_dir: str = "alerts"
-
+    workers: int = 4
 
 @dataclass(frozen=True)
 class EmailConfig:
@@ -48,7 +48,14 @@ class AppConfig:
     inference: InferenceConfig
     email: EmailConfig
     telegram: TelegramConfig
-    workers: int = 4
+    vlm: VLMConfig
+
+
+@dataclass(frozen=True)
+class VLMConfig:
+    """VLM configuration for weapon description."""
+
+    use_vlm: bool = False
 
 
 def parse_args() -> argparse.Namespace:
@@ -82,12 +89,23 @@ def parse_args() -> argparse.Namespace:
         default=30,
         help="remove track state after these missing frames",
     )
-    parser.add_argument("--output-dir", type=str, default="alerts", help="snapshot directory")
+    parser.add_argument(
+        "--output-dir", 
+        type=str, 
+        default="alerts", 
+        help="snapshot directory"
+        )
     parser.add_argument(
         "--workers",
         type=int,
         default=4,
         help="max async workers for alert channels",
+    )
+    parser.add_argument(
+        "--use-vlm", 
+        type=bool, 
+        default=False,
+        help="enable VLM querying for detected weapons"
     )
     return parser.parse_args()
 
@@ -106,6 +124,7 @@ def build_default_config(args: argparse.Namespace) -> AppConfig:
         cooldown_seconds=args.cooldown,
         stale_frames=args.stale_frames,
         output_dir=args.output_dir,
+        workers=args.workers,
     )
     email = EmailConfig(
         smtp_server=os.getenv("ALERT_SMTP_SERVER", "smtp.gmail.com"),
@@ -118,9 +137,13 @@ def build_default_config(args: argparse.Namespace) -> AppConfig:
         bot_token=os.getenv("ALERT_TELEGRAM_BOT_TOKEN", ""),
         chat_id=os.getenv("ALERT_TELEGRAM_CHAT_ID", ""),
     )
+    vlm = VLMConfig(
+        use_vlm=args.use_vlm
+    )
+
     return AppConfig(
         inference=inference,
         email=email,
         telegram=telegram,
-        workers=args.workers,
+        vlm=vlm,
     )
