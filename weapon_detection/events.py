@@ -11,3 +11,4 @@ class AlertEvent:
     frame_number: int
     track_id: int
     snapshot_path: Path
+    description: str = None  # Optional VLM description of the detected weapon

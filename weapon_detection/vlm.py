@@ -27,14 +27,14 @@ def load_model():
     processor = AutoProcessor.from_pretrained(model_id)
 
     print("Model loaded ✅")
+    return model, processor
 
-
-def query_model(image_path):
+def query_model(image_path, model, processor):
 
     # ------------------ LOAD IMAGE ------------------
     image = Image.open(image_path).convert("RGB")
 
-    prompt = "you are an export image analyst woring in crime branch. describe the appearance of the person holding the weapon"
+    prompt = "you are an export image analyst working in crime branch. describe the appearance (cloths color, style, and skin color, beard, hair color etc.) of the person holding the weapon"
 
     conversation = [
         {

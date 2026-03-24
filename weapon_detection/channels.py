@@ -36,6 +36,7 @@ class EmailChannel:
         msg.set_content(
             "Weapon detected at frame "
             f"{event.frame_number}\nTrack ID: {event.track_id}"
+            f"\nDescription: {event.description}" if event.description else ""
         )
 
         with event.snapshot_path.open("rb") as image_file:

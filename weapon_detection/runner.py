@@ -32,7 +32,7 @@ class WeaponDetectionRunner:
             EmailChannel(self.cfg.email),
             TelegramChannel(self.cfg.telegram),
         ]
-        self.dispatcher = AlertDispatcher(channels=channels, workers=self.cfg.workers)
+        self.dispatcher = AlertDispatcher(channels=channels)
         self.tracks = TrackLifecycle(
             persist_frames=self.cfg.inference.persist_frames,
             cooldown_seconds=self.cfg.inference.cooldown_seconds,
@@ -95,19 +95,23 @@ class WeaponDetectionRunner:
 
                     snapshot = self._snapshot_path(track_id)
                     cv2.imwrite(str(snapshot), frame)
+
+                    LOGGER.warning(
+                        "Weapon detected | track_id=%d frame=%d", track_id, frame_number
+                    )
+                    
+                    vlm_description = query_model(snapshot, vlm_model, vlm_processor) if self.cfg.vlm.use_vlm else None
+                    if vlm_description:
+                        LOGGER.info("VLM description for track_id=%d: %s", track_id, vlm_description)
+
                     event = AlertEvent(
                         frame_number=frame_number,
                         track_id=track_id,
                         snapshot_path=snapshot,
-                    )
-                    LOGGER.warning(
-                        "Weapon detected | track_id=%d frame=%d", track_id, frame_number
+                        description=vlm_description,
                     )
                     self.dispatcher.dispatch(event)
 
-                    vlm_description = query_model(snapshot, vlm_model, vlm_processor) if self.cfg.vlm.use_vlm else None
-                    if vlm_description:
-                        LOGGER.info("VLM description for track_id=%d: %s", track_id, vlm_description)
 
             self.tracks.cleanup(frame_number)
             cv2.imshow("Weapon Detection + Tracking", frame)

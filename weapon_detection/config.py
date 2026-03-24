@@ -68,7 +68,7 @@ def parse_args() -> argparse.Namespace:
         "--alert-classes",
         type=int,
         nargs="+",
-        default=[43],
+        default=[0],
         help="class ids that trigger alerts",
     )
     parser.add_argument(
