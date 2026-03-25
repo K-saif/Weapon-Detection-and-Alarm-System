@@ -143,7 +143,9 @@ python main.py \
   --cooldown 60 \
   --stale-frames 30 \
   --output-dir alerts \
-  --workers 4
+  --workers 4 \
+  --use_vlm False \
+  --vlm_model llava/paligrmma
 ```
 
 
