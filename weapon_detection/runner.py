@@ -62,8 +62,11 @@ class WeaponDetectionRunner:
         cap = cv2.VideoCapture(self.cfg.inference.source)
         frame_number = 0
         alert_classes = set(self.cfg.inference.alert_classes)
-        
-        vlm_model, vlm_processor = load_model() if self.cfg.vlm.use_vlm else (None, None)
+
+        if self.cfg.vlm.vlm_model == "llava":
+            vlm_model, vlm_processor = load_model() if self.cfg.vlm.use_vlm else (None, None)   
+        if self.cfg.vlm.vlm_model == "paligemma":
+            vlm_model, vlm_processor = load_model_pali() if self.cfg.vlm.use_vlm else (None, None)
 
         LOGGER.info("Starting detection with tracking")
 
@@ -102,7 +105,13 @@ class WeaponDetectionRunner:
                         "Weapon detected | track_id=%d frame=%d", track_id, frame_number
                     )
                     
-                    vlm_description = query_model(snapshot, vlm_model, vlm_processor) if self.cfg.vlm.use_vlm else None
+                    if self.cfg.vlm.use_vlm and self.cfg.vlm.vlm_model == "llava":
+                        vlm_description = query_model(snapshot, vlm_model, vlm_processor)
+                    elif self.cfg.vlm.use_vlm and self.cfg.vlm.vlm_model == "paligemma":
+                        vlm_description = query_model_pali(snapshot, vlm_model, vlm_processor)
+                    else:
+                        vlm_description = None
+
                     if vlm_description:
                         LOGGER.info("VLM description for track_id=%d: %s", track_id, vlm_description)
 

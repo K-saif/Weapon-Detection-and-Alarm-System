@@ -56,6 +56,7 @@ class VLMConfig:
     """VLM configuration for weapon description."""
 
     use_vlm: bool = False
+    vlm_model: tuple[str, ...] = ("llava", "paligemma")  
 
 
 def parse_args() -> argparse.Namespace:
@@ -107,6 +108,13 @@ def parse_args() -> argparse.Namespace:
         default=False,
         help="enable VLM querying for detected weapons"
     )
+    parser.add_argument(
+        "--model-name",
+        type=str,
+        nargs="+",
+        default="paligemma",
+        help="names of the VLM models to use"
+    )
     return parser.parse_args()
 
 
@@ -138,7 +146,8 @@ def build_default_config(args: argparse.Namespace) -> AppConfig:
         chat_id=os.getenv("ALERT_TELEGRAM_CHAT_ID", ""),
     )
     vlm = VLMConfig(
-        use_vlm=args.use_vlm
+        use_vlm=args.use_vlm,
+        vlm_model=args.vlm_model,
     )
 
     return AppConfig(
