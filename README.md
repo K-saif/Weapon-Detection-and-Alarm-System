@@ -2,11 +2,10 @@
 
 # Weapon Detection and Alarm System
 
-Real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (Email, Telegram). Also Supports VLM for better insights of the incidents.
+By using Ultralytics YOLO real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (**Email, Telegram**). Also Supports VLMs for better insights of the incidents (**LLaVA**, **PaliGemma**).
 
 </div>
 
-**Note**: This project initally implemented by using yolov5 for detection, now the current repo supports yolov8, yolo11 and yolo26. ignore yolov5 folder as it is no longer needed.
 
 ## <div>Quick Start</div>
 
@@ -18,10 +17,16 @@ Create a Python environment (recommended) and install dependencies:
 ```bash
 pip install ultralytics opencv-python requests
 ```
+if you want to use VLM features, also install:
+
+```bash
+pip install transformers accelerate
+```
 
 > Notes:
-> - `ultralytics` is used by the runtime pipeline in `main.py`.
+> - `ultralytics` is required for the detection pipeline.
 > - `requests` is required for Telegram alerts.
+> - `transformers` and `accelerate` are needed only if using VLM features.
 
 </details>
 
