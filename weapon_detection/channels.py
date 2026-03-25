@@ -82,6 +82,7 @@ class TelegramChannel:
         caption = (
             "⚠️ Weapon detected at frame "
             f"{event.frame_number} (Track ID: {event.track_id})"
+            f"\nDescription: {event.description}" if event.description else ""
         )
 
         try:
