@@ -2,7 +2,7 @@
 
 # Weapon Detection and Alarm System
 
-By using Ultralytics YOLO real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (**Email, Telegram**). Also Supports VLMs for better insights of the incidents (**LLaVA**, **PaliGemma**).
+By using Ultralytics YOLO real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (**Email, Telegram**). This Repo also Supports VLMs for better insights of the incidents (**LLaVA**, **PaliGemma**).
 
 </div>
 
@@ -17,7 +17,7 @@ Create a Python environment (recommended) and install dependencies:
 ```bash
 pip install ultralytics opencv-python requests
 ```
-if you want to use VLM features, also install:
+if you have GPU resources and want to use VLM features, also install:
 
 ```bash
 pip install transformers accelerate
@@ -86,13 +86,13 @@ ALERT_TELEGRAM_CHAT_ID=your_chat_id
 
 ```bash
 # Webcam
-python main.py --source 0 --conf 0.8
+python main.py --source 0 --conf 0.8 --device cpu
 
 # Video file
-python main.py --source path/to/video.mp4 --conf 0.8
+python main.py --source path/to/video.mp4 --conf 0.8 --device cpu
 
 # RTSP camera
-python main.py --source rtsp://user:pass@192.168.1.10:554/stream 
+python main.py --source rtsp://user:pass@192.168.1.10:554/stream --device gpu
 ```
 
 </details>
@@ -142,6 +142,7 @@ yolov5/
 python main.py \
   --weights models/best.pt \
   --source 0 \
+  --device cpu \
   --conf 0.8 \
   --alert-classes 0 1 \
   --persist-frames 8 \

@@ -26,6 +26,7 @@ class WeaponDetectionRunner:
     def __init__(self, config: AppConfig) -> None:
         self.cfg = config
         self.model = YOLO(self.cfg.inference.weights)
+        self.detector_device = "cpu" if self.cfg.inference.device == "cpu" else "0"
         self.output_dir = Path(self.cfg.inference.output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -76,7 +77,12 @@ class WeaponDetectionRunner:
                 break
 
             frame_number += 1
-            results = self.model.track(frame, conf=self.cfg.inference.conf, persist=True)
+            results = self.model.track(
+                frame,
+                conf=self.cfg.inference.conf,
+                persist=True,
+                device=self.detector_device,
+            )
 
             for result in results:
                 boxes = result.boxes

@@ -21,6 +21,7 @@ class InferenceConfig:
     stale_frames: int = 30
     output_dir: str = "alerts"
     workers: int = 4
+    device: str = "cpu"
 
 @dataclass(frozen=True)
 class EmailConfig:
@@ -56,7 +57,7 @@ class VLMConfig:
     """VLM configuration for weapon description."""
 
     use_vlm: bool = False
-    vlm_model: tuple[str, ...] = ("llava", "paligemma")  
+    vlm_model: str = "paligemma"
 
 
 def parse_args() -> argparse.Namespace:
@@ -103,6 +104,13 @@ def parse_args() -> argparse.Namespace:
         help="max async workers for alert channels",
     )
     parser.add_argument(
+        "--device",
+        type=str,
+        choices=["cpu", "gpu"],
+        default="cpu",
+        help="inference device for Ultralytics detection (cpu or gpu)",
+    )
+    parser.add_argument(
         "--use-vlm", 
         type=bool, 
         default=False,
@@ -111,7 +119,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--model-name",
         type=str,
-        nargs="+",
+        choices=["llava", "paligemma"],
         default="paligemma",
         help="names of the VLM models to use"
     )
@@ -133,6 +141,7 @@ def build_default_config(args: argparse.Namespace) -> AppConfig:
         stale_frames=args.stale_frames,
         output_dir=args.output_dir,
         workers=args.workers,
+        device=args.device,
     )
     email = EmailConfig(
         smtp_server=os.getenv("ALERT_SMTP_SERVER", "smtp.gmail.com"),
