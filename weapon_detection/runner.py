@@ -16,6 +16,7 @@ from weapon_detection.events import AlertEvent
 from weapon_detection.tracking import TrackLifecycle
 from weapon_detection.vlm import load_model, query_model
 from weapon_detection.paligemma import load_model_pali, query_model_pali
+from weapon_detection.qwen import load_model_qwen, query_model_qwen
 
 LOGGER = logging.getLogger("weapon-detect")
 
@@ -68,6 +69,8 @@ class WeaponDetectionRunner:
             vlm_model, vlm_processor = load_model() if self.cfg.vlm.use_vlm else (None, None)   
         if self.cfg.vlm.vlm_model == "paligemma":
             vlm_model, vlm_processor = load_model_pali() if self.cfg.vlm.use_vlm else (None, None)
+        if self.cfg.vlm.vlm_model == "qwen":
+            vlm_model, vlm_processor = load_model_qwen() if self.cfg.vlm.use_vlm else (None, None)
 
         LOGGER.info("Starting detection with tracking")
 
@@ -115,6 +118,9 @@ class WeaponDetectionRunner:
                         vlm_description = query_model(snapshot, vlm_model, vlm_processor)
                     elif self.cfg.vlm.use_vlm and self.cfg.vlm.vlm_model == "paligemma":
                         vlm_description = query_model_pali(snapshot, vlm_model, vlm_processor)
+                    elif self.cfg.vlm.use_vlm and self.cfg.vlm.vlm_model == "qwen":
+                        vlm_model, vlm_processor = load_model_qwen()
+                        vlm_description = query_model_qwen(snapshot, vlm_model, vlm_processor)
                     else:
                         vlm_description = None
 

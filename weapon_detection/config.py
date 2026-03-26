@@ -119,7 +119,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--vlm_model",
         type=str,
-        choices=["llava", "paligemma"],
+        choices=["llava", "paligemma","qwen"],
         default="paligemma",
         help="names of the VLM models to use"
     )
