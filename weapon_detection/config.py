@@ -111,13 +111,13 @@ def parse_args() -> argparse.Namespace:
         help="inference device for Ultralytics detection (cpu or gpu)",
     )
     parser.add_argument(
-        "--use-vlm", 
+        "--use_vlm", 
         type=bool, 
         default=False,
         help="enable VLM querying for detected weapons"
     )
     parser.add_argument(
-        "--model-name",
+        "--vlm_model",
         type=str,
         choices=["llava", "paligemma"],
         default="paligemma",
