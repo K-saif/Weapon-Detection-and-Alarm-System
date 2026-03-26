@@ -114,15 +114,17 @@ class WeaponDetectionRunner:
                         "Weapon detected | track_id=%d frame=%d", track_id, frame_number
                     )
                     
-                    if self.cfg.vlm.use_vlm and self.cfg.vlm.vlm_model == "llava":
-                        vlm_description = query_model(snapshot, vlm_model, vlm_processor)
-                    elif self.cfg.vlm.use_vlm and self.cfg.vlm.vlm_model == "paligemma":
-                        vlm_description = query_model_pali(snapshot, vlm_model, vlm_processor)
-                    elif self.cfg.vlm.use_vlm and self.cfg.vlm.vlm_model == "qwen":
-                        vlm_model, vlm_processor = load_model_qwen()
-                        vlm_description = query_model_qwen(snapshot, vlm_model, vlm_processor)
-                    else:
-                        vlm_description = None
+                    vlm_description = None
+                    if self.cfg.vlm.use_vlm:
+                        try:
+                            if self.cfg.vlm.vlm_model == "llava":
+                                vlm_description = query_model(snapshot, vlm_model, vlm_processor)
+                            elif self.cfg.vlm.vlm_model == "paligemma":
+                                vlm_description = query_model_pali(snapshot, vlm_model, vlm_processor)
+                            elif self.cfg.vlm.vlm_model == "qwen":
+                                vlm_description = query_model_qwen(snapshot, vlm_model, vlm_processor)
+                        except Exception as exc:
+                            LOGGER.exception("VLM query failed for track_id=%d: %s", track_id, exc)
 
                     if vlm_description:
                         LOGGER.info("VLM description for track_id=%d: %s", track_id, vlm_description)
