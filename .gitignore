@@ -29,3 +29,5 @@ __pycache__/
 venv/
 env/
 .vscode
+
+*.json

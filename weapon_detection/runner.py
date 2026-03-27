@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 from datetime import datetime
 from pathlib import Path
@@ -45,6 +46,26 @@ class WeaponDetectionRunner:
     def _snapshot_path(self, track_id: int) -> Path:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         return self.output_dir / f"weapon_track{track_id}_{timestamp}.jpg"
+
+    def _json_path(self) -> Path:
+        return self.output_dir / f"Alert_history.json"
+
+    def _append_alert_history(self, alert_data: dict[str, object]) -> None:
+        json_path = self._json_path()
+        history: list[dict[str, object]] = []
+        if json_path.exists():
+            raw_content = json_path.read_text(encoding="utf-8").strip()
+            if raw_content:
+                parsed = json.loads(raw_content)
+                if isinstance(parsed, list):
+                    history = [item for item in parsed if isinstance(item, dict)]
+                elif isinstance(parsed, dict):
+                    history = [parsed]
+        history.append(alert_data)
+        json_path.write_text(
+            json.dumps(history, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
 
     def _draw_box(self, frame, box, track_id: int, conf: float) -> None:
         x1, y1, x2, y2 = map(int, box.xyxy[0])
@@ -136,8 +157,17 @@ class WeaponDetectionRunner:
                         description=vlm_description,
                     )
                     self.dispatcher.dispatch(event)
+                    
+                    alert_data = {
+                        "snapshot_path": str(snapshot),
+                        "confidence": conf,
+                        "track_id": track_id,
+                        "frame_number": frame_number,
+                        "description": vlm_description if self.cfg.vlm.use_vlm else None,
+                    }
+                    self._append_alert_history(alert_data)
 
-
+                    
             self.tracks.cleanup(frame_number)
             cv2.imshow("Weapon Detection + Tracking", frame)
 
