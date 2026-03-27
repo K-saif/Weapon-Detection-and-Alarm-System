@@ -12,7 +12,11 @@ def main() -> None:
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
     )
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
+    logging.getLogger("huggingface_hub").setLevel(logging.WARNING)
+    logging.getLogger("transformers").setLevel(logging.WARNING)
     args = parse_args()
     config = build_default_config(args)
-    print(f"Configs are\n: {config}")  # for debugging
+    logging.getLogger("weapon-detect").debug("Configs are: %s", config)
     WeaponDetectionRunner(config).run()

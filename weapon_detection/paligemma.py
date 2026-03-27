@@ -4,13 +4,16 @@ from transformers import (
 )
 from transformers.image_utils import load_image
 import torch
+import logging
+
+LOGGER = logging.getLogger("weapon-detect")
 
 # ------------------ LOAD MODEL ------------------
 def load_model_pali():
 
     model_id = "google/paligemma2-3b-mix-448"
 
-    print("Loading model...")
+    LOGGER.debug("Loading PaliGemma model")
 
     model = PaliGemmaForConditionalGeneration.from_pretrained(
         model_id,
@@ -20,7 +23,7 @@ def load_model_pali():
 
     processor = PaliGemmaProcessor.from_pretrained(model_id)
 
-    print("Model loaded ✅")
+    LOGGER.debug("PaliGemma model loaded")
     return model, processor
 
 

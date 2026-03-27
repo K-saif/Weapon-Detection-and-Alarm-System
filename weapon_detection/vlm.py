@@ -1,6 +1,9 @@
 import torch
+import logging
 from transformers import AutoProcessor, LlavaForConditionalGeneration, BitsAndBytesConfig
 from PIL import Image
+
+LOGGER = logging.getLogger("weapon-detect")
 
 def load_model():
     # ------------------ CONFIG ------------------
@@ -14,7 +17,7 @@ def load_model():
     )
 
     # ------------------ LOAD MODEL ------------------
-    print("Loading model...")
+    LOGGER.debug("Loading Llava model")
 
     model = LlavaForConditionalGeneration.from_pretrained(
         model_id,
@@ -26,7 +29,7 @@ def load_model():
 
     processor = AutoProcessor.from_pretrained(model_id)
 
-    print("Model loaded ✅")
+    LOGGER.debug("Llava model loaded")
     return model, processor
 
 def query_model(image_path, model, processor):
@@ -71,6 +74,6 @@ def query_model(image_path, model, processor):
     if "ASSISTANT:" in result:
         result = result.split("ASSISTANT:")[-1].strip()
 
-    print(f"\n🤖: {result}\n")
+    LOGGER.debug("Llava response: %s", result)
     return result
 

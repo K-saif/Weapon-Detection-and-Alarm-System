@@ -1,20 +1,22 @@
 import torch
+import logging
 from transformers import AutoProcessor, AutoModelForImageTextToText
 from transformers.image_utils import load_image
 from pathlib import Path
 from PIL import Image
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
+LOGGER = logging.getLogger("weapon-detect")
 
 def load_model_qwen():
-    print("Loading model...")
+    LOGGER.debug("Loading Qwen model")
     processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-3B-Instruct")
     model = AutoModelForImageTextToText.from_pretrained(
         "Qwen/Qwen2.5-VL-3B-Instruct",
         torch_dtype=torch.float16
     ).to(device)
     model.eval()
-    print("Model loaded ✅")
+    LOGGER.debug("Qwen model loaded")
     return model, processor
 
 
