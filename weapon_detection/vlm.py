@@ -32,11 +32,7 @@ def load_model():
     LOGGER.debug("Llava model loaded")
     return model, processor
 
-def query_model(image_path, model, processor):
-
-    # ------------------ LOAD IMAGE ------------------
-    image = Image.open(image_path).convert("RGB")
-
+def query_model(image, model, processor):
     prompt = "you are an export image analyst working in crime branch. describe the appearance (cloths color, style, and skin color, beard, hair color etc.) of the person holding the weapon"
 
     conversation = [

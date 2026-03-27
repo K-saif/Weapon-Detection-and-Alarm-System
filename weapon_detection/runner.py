@@ -99,6 +99,7 @@ class WeaponDetectionRunner:
             ret, frame = cap.read()
             if not ret:
                 break
+            # clean_frame = frame.copy()
 
             frame_number += 1
             results = self.model.track(
@@ -139,11 +140,11 @@ class WeaponDetectionRunner:
                     if self.cfg.vlm.use_vlm:
                         try:
                             if self.cfg.vlm.vlm_model == "llava":
-                                vlm_description = query_model(snapshot, vlm_model, vlm_processor)
+                                vlm_description = query_model(frame, vlm_model, vlm_processor)
                             elif self.cfg.vlm.vlm_model == "paligemma":
-                                vlm_description = query_model_pali(snapshot, vlm_model, vlm_processor)
+                                vlm_description = query_model_pali(frame, vlm_model, vlm_processor)
                             elif self.cfg.vlm.vlm_model == "qwen":
-                                vlm_description = query_model_qwen(snapshot, vlm_model, vlm_processor)
+                                vlm_description = query_model_qwen(frame, vlm_model, vlm_processor)
                         except Exception as exc:
                             LOGGER.exception("VLM query failed for track_id=%d: %s", track_id, exc)
 

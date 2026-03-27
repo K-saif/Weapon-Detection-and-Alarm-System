@@ -29,8 +29,6 @@ def load_model_pali():
 
 
 def query_model_pali(image, model, processor):
-
-    image = load_image(image).convert("RGB")
     prompt = "<image> color of the person's cloth."
 
     # process inputs

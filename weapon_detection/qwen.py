@@ -20,9 +20,7 @@ def load_model_qwen():
     return model, processor
 
 
-def query_model_qwen(image_path, model, processor):
-    image = Image.open(image_path).convert("RGB")
-
+def query_model_qwen(image, model, processor):
     prompt = "You are an expert crime analyst. Briefly describe the appearance (clothes, color, beard, hair, etc.) of the person holding the weapon."
 
     # ✅ Correct message format (VERY IMPORTANT)
