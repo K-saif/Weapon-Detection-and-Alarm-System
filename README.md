@@ -98,6 +98,13 @@ python main.py --source rtsp://user:pass@192.168.1.10:554/stream --device gpu
 </details>
 
 <details>
+<summary><strong>Train Custom Model</strong></summary>
+
+For training custom models follow the [Ultralytics YOLO training guide](https://docs.ultralytics.com/training/). After training, paste your best.pt into [models folder](models/)  or use `--weights path/to/best.pt`.
+
+</details>
+
+<details>
 <summary><strong>Alert Logic</strong></summary>
 
 The pipeline includes:
