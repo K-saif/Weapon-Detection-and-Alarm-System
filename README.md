@@ -2,7 +2,7 @@
 
 # Weapon Detection and Alarm System
 
-By using Ultralytics YOLO real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (**Email, Telegram**). This Repo also Supports VLMs for better insights of the incidents (**LLaVA**, **PaliGemma**).
+By using Ultralytics YOLO real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (**Email, Telegram**). This Repo also Supports VLMs for better insights of the incidents (**LLaVA**, **PaliGemma**, **Qwen**).
 
 </div>
 
@@ -133,15 +133,6 @@ yolov5/
   ...
 ```
 
-### Module Responsibilities
-
-- `weapon_detection/config.py`: CLI arguments + immutable app config.
-- `weapon_detection/events.py`: alert event dataclass.
-- `weapon_detection/channels.py`: Email and Telegram alert channels.
-- `weapon_detection/dispatcher.py`: async channel fan-out dispatcher.
-- `weapon_detection/tracking.py`: persistence/cooldown/stale track lifecycle.
-- `weapon_detection/runner.py`: end-to-end detection and alert orchestration.
-- `weapon_detection/cli.py`: app startup and logging bootstrap.
 
 ## <div>CLI Options</div>
 
@@ -158,16 +149,11 @@ python main.py \
   --output-dir alerts \
   --workers 4 \
   --use_vlm False \
-  --vlm_model llava/paligrmma
+  --vlm_model llava/paligrmma/qwen
 ```
 
-
-
-## <div>Troubleshooting</div>
-
-- If `cv2` is missing: `pip install opencv-python`
-- If `ultralytics` is missing: `pip install ultralytics`
-- If Telegram alert is skipped: install `requests` and set Telegram env vars.
+## <div>Contributing</div>
+Contributions are welcome! Please open an issue or submit a pull request for bug fixes, improvements, or new features.
 
 ## <div>License</div>
 
