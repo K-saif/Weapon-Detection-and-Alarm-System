@@ -103,9 +103,9 @@ python main.py source=rtsp://user:pass@192.168.1.10:554/stream device=gpu
 
 The pipeline includes:
 
-- Persistence gating: object must appear for `persist-frames` before alert.
+- Persistence gating: object must appear for `persist_frames` before alert.
 - Cooldown timer: same track alerts again only after `cooldown` seconds.
-- Stale cleanup: track state is removed after `stale-frames` missing frames.
+- Stale cleanup: track state is removed after `stale_frames` missing frames.
 - Async dispatch: alert channels run concurrently via thread pool.
 
 </details>
@@ -117,7 +117,7 @@ For training custom models follow the [Ultralytics YOLO training guide](https://
 ## <div>Project Structure</div>
 
 ```text
---main.py
+|--main.py
 |--models/
 |   |--best.pt
 |--weapon_detection/
@@ -137,24 +137,24 @@ For training custom models follow the [Ultralytics YOLO training guide](https://
 ## <div>CLI Options</div>
 
 | Argument | Type | Default | Description |
-|---|---|---|---|
+|----|----|---|---|
 | `weights` | `str` | `models/best.pt` | Path to the YOLO model weights file. |
-| `source` | `int` or `str` | `0` | Video input source (webcam index, file path, RTSP/HTTP stream URL). |
+| `source` | `int`/ `str` | `0` | Video input source (webcam index, file path, RTSP/HTTP stream URL). |
 | `device` | `str` | `cpu` | Inference device: `cpu` or `gpu`. |
 | `conf` | `float` | `0.4` | Detection confidence threshold. |
-| `alert-classes` | `list[int]` | `0` | Class IDs that trigger alerts (comma-separated in CLI, e.g., `0,1`). |
-| `persist-frames` | `int` | `8` | Frames required before the first alert for a tracked object. |
+| `alert_classes` | `list[int]` | `0` | Class IDs that trigger alerts (comma-separated in CLI, e.g., `0,1`). |
+| `persist_frames` | `int` | `8` | Frames required before the first alert for a tracked object. |
 | `cooldown` | `int` | `60` | Seconds to wait before alerting again for the same track. |
-| `stale-frames` | `int` | `30` | Missing frames before tracked state is removed. |
-| `output-dir` | `str` | `alerts` | Directory used for saved snapshots and alert artifacts. |
+| `stale_frames` | `int` | `30` | Missing frames before tracked state is removed. |
+| `output_dir` | `str` | `alerts` | Directory used for saved snapshots and alert artifacts. |
 | `workers` | `int` | `4` | Maximum async worker threads for alert channels. |
-| `use-vlm` | `bool` | `false` | Enable VLM querying for detected weapons. |
-| `vlm-model` | `str` | `paligemma` | VLM backend to use: `llava`, `paligemma`, or `qwen`. |
+| `use_vlm` | `bool` | `false` | Enable VLM querying for detected weapons. |
+| `vlm_model` | `str` | `paligemma` | VLM backend to use: `llava`, `paligemma`, or `qwen`. |
 
 Example:
 
 ```bash
-python main.py source=0 device=cpu conf=0.8 output-dir=alerts
+python main.py source=0 device=cpu conf=0.8 output_dir=alerts
 ```
 
 ## <div>Contributing</div>

@@ -101,14 +101,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--source", type=str, default="0", help="video source")
     parser.add_argument("--conf", type=float, default=0.4, help="confidence threshold")
     parser.add_argument(
-        "--alert-classes",
+        "--alert_classes",
         type=int,
         nargs="+",
         default=[0],
         help="class ids that trigger alerts",
     )
     parser.add_argument(
-        "--persist-frames",
+        "--persist_frames",
         type=int,
         default=8,
         help="frames required before first alert",
@@ -120,13 +120,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="seconds between alerts for the same track",
     )
     parser.add_argument(
-        "--stale-frames",
+        "--stale_frames",
         type=int,
         default=30,
         help="remove track state after these missing frames",
     )
     parser.add_argument(
-        "--output-dir", 
+        "--output_dir", 
         type=str, 
         default="alerts", 
         help="snapshot directory"
@@ -146,14 +146,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--use_vlm",
-        "--use-vlm",
         type=_str_to_bool,
         default=False,
         help="enable VLM querying for detected weapons"
     )
     parser.add_argument(
         "--vlm_model",
-        "--vlm-model",
         type=str,
         choices=["llava", "paligemma","qwen"],
         default="paligemma",
@@ -164,15 +162,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "weights",
         "source",
         "conf",
-        "alert-classes",
-        "persist-frames",
+        "alert_classes",
+        "persist_frames",
         "cooldown",
-        "stale-frames",
-        "output-dir",
+        "stale_frames",
+        "output_dir",
         "workers",
         "device",
-        "use-vlm",
-        "vlm-model",
+        "use_vlm",
+        "vlm_model",
     }
     normalized_args = _normalize_key_value_args(raw_args, key_value_options)
     return parser.parse_args(normalized_args)
