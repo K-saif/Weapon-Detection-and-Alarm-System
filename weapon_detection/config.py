@@ -4,9 +4,43 @@ from __future__ import annotations
 
 import argparse
 import os
+import sys
 from dataclasses import dataclass
 from dotenv import load_dotenv
 load_dotenv()  # load .env variables for config
+
+
+def _str_to_bool(value: str) -> bool:
+    """Parses common CLI boolean representations."""
+    normalized = str(value).strip().lower()
+    if normalized in {"1", "true", "yes", "y", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "n", "off"}:
+        return False
+    raise argparse.ArgumentTypeError(f"invalid boolean value: {value}")
+
+
+def _normalize_key_value_args(raw_args: list[str], key_value_options: set[str]) -> list[str]:
+    """Converts Ultralytics-like key=value tokens into argparse format."""
+    normalized_args: list[str] = []
+    for token in raw_args:
+        if token.startswith("--") or "=" not in token:
+            normalized_args.append(token)
+            continue
+
+        key, value = token.split("=", 1)
+        key_name = key.strip().lstrip("-").replace("_", "-")
+        if key_name not in key_value_options:
+            normalized_args.append(token)
+            continue
+
+        normalized_args.append(f"--{key_name}")
+        if key_name == "alert-classes":
+            class_values = [part.strip() for part in value.split(",") if part.strip()]
+            normalized_args.extend(class_values)
+        else:
+            normalized_args.append(value)
+    return normalized_args
 
 @dataclass(frozen=True)
 class InferenceConfig:
@@ -60,7 +94,7 @@ class VLMConfig:
     vlm_model: str = "paligemma"
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """Parses CLI arguments in Ultralytics-like style."""
     parser = argparse.ArgumentParser(description="Weapon detection with scalable alerting")
     parser.add_argument("--weights", type=str, default="models/best.pt", help="model path")
@@ -111,19 +145,37 @@ def parse_args() -> argparse.Namespace:
         help="inference device for Ultralytics detection (cpu or gpu)",
     )
     parser.add_argument(
-        "--use_vlm", 
-        type=bool, 
+        "--use_vlm",
+        "--use-vlm",
+        type=_str_to_bool,
         default=False,
         help="enable VLM querying for detected weapons"
     )
     parser.add_argument(
         "--vlm_model",
+        "--vlm-model",
         type=str,
         choices=["llava", "paligemma","qwen"],
         default="paligemma",
         help="names of the VLM models to use"
     )
-    return parser.parse_args()
+    raw_args = list(sys.argv[1:] if argv is None else argv)
+    key_value_options = {
+        "weights",
+        "source",
+        "conf",
+        "alert-classes",
+        "persist-frames",
+        "cooldown",
+        "stale-frames",
+        "output-dir",
+        "workers",
+        "device",
+        "use-vlm",
+        "vlm-model",
+    }
+    normalized_args = _normalize_key_value_args(raw_args, key_value_options)
+    return parser.parse_args(normalized_args)
 
 
 def build_default_config(args: argparse.Namespace) -> AppConfig:

@@ -70,7 +70,7 @@ ALERT_TELEGRAM_CHAT_ID=your_chat_id
 <details open>
 <summary><strong>Supported Inputs</strong></summary>
 
-| Input | `--source` |
+| Input | `source` |
 |---|---|
 | Webcam | `0` (default) |
 | Video file | `path/to/video.mp4` |
@@ -86,13 +86,13 @@ ALERT_TELEGRAM_CHAT_ID=your_chat_id
 
 ```bash
 # Webcam
-python main.py --source 0 --conf 0.8 --device cpu
+python main.py source=0 conf=0.8 device=cpu
 
 # Video file
-python main.py --source path/to/video.mp4 --conf 0.8 --device cpu
+python main.py source=path/to/video.mp4 conf=0.8 device=cpu
 
 # RTSP camera
-python main.py --source rtsp://user:pass@192.168.1.10:554/stream --device gpu
+python main.py source=rtsp://user:pass@192.168.1.10:554/stream device=gpu
 ```
 
 </details>
@@ -100,7 +100,7 @@ python main.py --source rtsp://user:pass@192.168.1.10:554/stream --device gpu
 <details>
 <summary><strong>Train Custom Model</strong></summary>
 
-For training custom models follow the [Ultralytics YOLO training guide](https://docs.ultralytics.com/training/). After training, paste your best.pt into [models folder](models/)  or use `--weights path/to/best.pt`.
+For training custom models follow the [Ultralytics YOLO training guide](https://docs.ultralytics.com/training/). After training, paste your best.pt into [models folder](models/)  or use `weights=path/to/best.pt`.
 
 </details>
 
@@ -109,9 +109,9 @@ For training custom models follow the [Ultralytics YOLO training guide](https://
 
 The pipeline includes:
 
-- Persistence gating: object must appear for `--persist-frames` before alert.
-- Cooldown timer: same track alerts again only after `--cooldown` seconds.
-- Stale cleanup: track state is removed after `--stale-frames` missing frames.
+- Persistence gating: object must appear for `persist-frames` before alert.
+- Cooldown timer: same track alerts again only after `cooldown` seconds.
+- Stale cleanup: track state is removed after `stale-frames` missing frames.
 - Async dispatch: alert channels run concurrently via thread pool.
 
 </details>
@@ -136,20 +136,25 @@ yolov5/
 
 ## <div>CLI Options</div>
 
+| Argument | Value |
+|---|---|
+| `weights` | `models/best.pt` |
+| `source` | `0` |
+| `device` | `cpu` or `gpu` |
+| `conf` | `0.8` |
+| `alert-classes` | `0,1` |
+| `persist-frames` | `8` |
+| `cooldown` | `60` |
+| `stale-frames` | `30` |
+| `output-dir` | `alerts` |
+| `workers` | `4` |
+| `use-vlm` | `false` |
+| `vlm-model` | `llava` or `paligemma` or `qwen` |
+
+Example:
+
 ```bash
-python main.py \
-  --weights models/best.pt \
-  --source 0 \
-  --device cpu \
-  --conf 0.8 \
-  --alert-classes 0 1 \
-  --persist-frames 8 \
-  --cooldown 60 \
-  --stale-frames 30 \
-  --output-dir alerts \
-  --workers 4 \
-  --use_vlm False \
-  --vlm_model llava/paligrmma/qwen
+python main.py weights=models/best.pt source=0 device=cpu conf=0.8 alert-classes=0,1 persist-frames=8 cooldown=60 stale-frames=30 output-dir=alerts workers=4 use-vlm=false vlm-model=paligemma
 ```
 
 ## <div>Contributing</div>
