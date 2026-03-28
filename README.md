@@ -97,12 +97,6 @@ python main.py source=rtsp://user:pass@192.168.1.10:554/stream device=gpu
 
 </details>
 
-<details>
-<summary><strong>Train Custom Model</strong></summary>
-
-For training custom models follow the [Ultralytics YOLO training guide](https://docs.ultralytics.com/training/). After training, paste your best.pt into [models folder](models/)  or use `weights=path/to/best.pt`.
-
-</details>
 
 <details>
 <summary><strong>Alert Logic</strong></summary>
@@ -116,20 +110,26 @@ The pipeline includes:
 
 </details>
 
+## <div>Training Custom Models</div>
+For training custom models follow the [Ultralytics YOLO training guide](https://docs.ultralytics.com/training/). After training, paste your best.pt into [models folder](models/)  or use `weights=path/to/best.pt`.
+
+
 ## <div>Project Structure</div>
 
 ```text
-main.py
-weapon_detection/
-  __init__.py
-  cli.py
-  config.py
-  events.py
-  channels.py
-  dispatcher.py
-  tracking.py
-  runner.py
-yolov5/
+--main.py
+|--models/
+|   |--best.pt
+|--weapon_detection/
+|   |--__init__.py
+|   |--cli.py
+|   |--config.py
+|   |--events.py
+|   |--channels.py
+|   |--dispatcher.py
+|   |--tracking.py
+|   |--runner.py
+
   ...
 ```
 
@@ -154,7 +154,7 @@ yolov5/
 Example:
 
 ```bash
-python main.py weights=models/best.pt source=0 device=cpu conf=0.8 alert-classes=0,1 persist-frames=8 cooldown=60 stale-frames=30 output-dir=alerts workers=4 use-vlm=false vlm-model=paligemma
+python main.py source=0 device=cpu conf=0.8 output-dir=alerts
 ```
 
 ## <div>Contributing</div>
