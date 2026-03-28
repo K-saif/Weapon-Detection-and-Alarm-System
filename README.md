@@ -136,20 +136,20 @@ yolov5/
 
 ## <div>CLI Options</div>
 
-| Argument | Value |
-|---|---|
-| `weights` | `models/best.pt` |
-| `source` | `0` |
-| `device` | `cpu` or `gpu` |
-| `conf` | `0.8` |
-| `alert-classes` | `0,1` |
-| `persist-frames` | `8` |
-| `cooldown` | `60` |
-| `stale-frames` | `30` |
-| `output-dir` | `alerts` |
-| `workers` | `4` |
-| `use-vlm` | `false` |
-| `vlm-model` | `llava` or `paligemma` or `qwen` |
+| Argument | Type | Default | Description |
+|---|---|---|---|
+| `weights` | `str` | `models/best.pt` | Path to the YOLO model weights file. |
+| `source` | `int` or `str` | `0` | Video input source (webcam index, file path, RTSP/HTTP stream URL). |
+| `device` | `str` | `cpu` | Inference device: `cpu` or `gpu`. |
+| `conf` | `float` | `0.4` | Detection confidence threshold. |
+| `alert-classes` | `list[int]` | `0` | Class IDs that trigger alerts (comma-separated in CLI, e.g., `0,1`). |
+| `persist-frames` | `int` | `8` | Frames required before the first alert for a tracked object. |
+| `cooldown` | `int` | `60` | Seconds to wait before alerting again for the same track. |
+| `stale-frames` | `int` | `30` | Missing frames before tracked state is removed. |
+| `output-dir` | `str` | `alerts` | Directory used for saved snapshots and alert artifacts. |
+| `workers` | `int` | `4` | Maximum async worker threads for alert channels. |
+| `use-vlm` | `bool` | `false` | Enable VLM querying for detected weapons. |
+| `vlm-model` | `str` | `paligemma` | VLM backend to use: `llava`, `paligemma`, or `qwen`. |
 
 Example:
 
