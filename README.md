@@ -2,7 +2,7 @@
 
 # Weapon Detection and Alarm System
 
-By using Ultralytics YOLO real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (**Email, Telegram**). This Repo also Supports VLMs for better insights of the incidents (**LLaVA**, **PaliGemma**, **Qwen**).
+By using Ultralytics YOLO real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (**Email**, **Telegram**). This Repo also Supports VLMs for better insights of the incidents (**LLaVA**, **PaliGemma**, **Qwen**).
 
 </div>
 
@@ -113,6 +113,7 @@ The pipeline includes:
 ## <div>Training Custom Models</div>
 For training custom models follow the [Ultralytics YOLO training guide](https://docs.ultralytics.com/training/). After training, paste your best.pt into [models folder](models/)  or use `weights=path/to/best.pt`.
 
+**Note:** This model was trained only for demonstration purposes on a small custom dataset. For best results, you should train on more representative dataset of weapons in various conditions.
 
 ## <div>Project Structure</div>
 
