@@ -108,6 +108,8 @@ The pipeline includes:
 - Stale cleanup: track state is removed after `stale_frames` missing frames.
 - Async dispatch: alert channels run concurrently via thread pool.
 
+**Note:** keep cooldown high to avoid spamming alerts, especially in crowded scenes.
+
 </details>
 
 ## <div>Training Custom Models</div>
@@ -157,6 +159,11 @@ Example:
 ```bash
 python main.py source=0 device=cpu conf=0.8 output_dir=alerts
 ```
+
+## Future Enhancements
+- Add person detection and tracking to correlate weapons with individuals.
+- Implement a web dashboard for real-time monitoring and alert management.
+- Support for lightweight models like onnx or tflite for edge deployment.
 
 ## <div>Contributing</div>
 Contributions are welcome! Please open an issue or submit a pull request for bug fixes, improvements, or new features.
