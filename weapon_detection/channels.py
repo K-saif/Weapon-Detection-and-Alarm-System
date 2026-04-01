@@ -80,9 +80,7 @@ class TelegramChannel:
 
         url = f"https://api.telegram.org/bot{self.config.bot_token}/sendPhoto"
         caption = (
-            "⚠️ Weapon detected at frame "
-            f"{event.frame_number} (Track ID: {event.track_id})"
-            f"\nDescription: {event.description}" if event.description else ""
+            f"\nDescription: {event.description}" if event.description else f"⚠️ Weapon detected at frame \n {event.frame_number} (Track ID: {event.track_id})"
         )
 
         try:
