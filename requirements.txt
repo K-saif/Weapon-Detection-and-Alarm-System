@@ -1,0 +1,8 @@
+# Base dependencies
+ultralytics
+opencv-python
+requests
+dotenv
+transformers
+accelerate
+torch

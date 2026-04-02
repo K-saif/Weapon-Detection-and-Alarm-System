@@ -2,7 +2,6 @@
 *.pth
 *.onnx
 *.log
-*.txt
 *.pyc
 __pycache__/
 *.csv
@@ -31,3 +30,5 @@ env/
 .vscode
 
 *.json
+
+todo.txt

@@ -15,18 +15,13 @@ By using Ultralytics YOLO real-time weapon detection with tracking, cooldown-bas
 Create a Python environment (recommended) and install dependencies:
 
 ```bash
-pip install ultralytics opencv-python requests
-```
-if you have GPU resources and want to use VLM features, also install:
-
-```bash
-pip install transformers accelerate
+pip install -r requirements.txt
 ```
 
 > Notes:
 > - `ultralytics` is required for the detection pipeline.
 > - `requests` is required for Telegram alerts.
-> - `transformers` and `accelerate` are needed only if using VLM features.
+> - `transformers` and `accelerate` are needed for VLM features.
 
 </details>
 
