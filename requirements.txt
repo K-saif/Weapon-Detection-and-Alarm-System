@@ -6,3 +6,5 @@ dotenv
 transformers
 accelerate
 torch
+streamlit
+pillow
