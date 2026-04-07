@@ -44,6 +44,33 @@
             display: block;
         }
 
+        .source-selector {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .source-selector label {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .source-selector select,
+        .source-selector input {
+            padding: 10px 15px;
+            font-size: 14px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background: #2a2a2a;
+            color: #fff;
+        }
+
+        .source-selector input {
+            width: 200px;
+        }
+
         .controls {
             display: flex;
             gap: 10px;
@@ -91,6 +118,21 @@
 </head>
 <body>
     <div class="container">
+        <h1 style="color: #fff; margin-bottom: 20px;">Weapon Detection System</h1>
+        
+        <div class="source-selector">
+            <label for="source-type">Source Type:</label>
+            <select id="source-type" onchange="updateSourceInput()">
+                <option value="camera">Camera</option>
+                <option value="file">Video File</option>
+                <option value="rtsp">IP Camera (RTSP)</option>
+                <option value="custom">Custom</option>
+            </select>
+            
+            <label for="source-input" id="source-label">Camera Index:</label>
+            <input type="text" id="source-input" value="0" placeholder="0, 1, 2 or file path">
+        </div>
+        
         <div class="video-container">
             <img id="video-stream" src="" alt="Live Feed" style="max-width: 100%; border: none;">
         </div>
@@ -104,22 +146,59 @@
         const API_BASE = "http://localhost:5000/api";
         let streamActive = false;
 
+        function updateSourceInput() {
+            const sourceType = document.getElementById("source-type").value;
+            const sourceLabel = document.getElementById("source-label");
+            const sourceInput = document.getElementById("source-input");
+            
+            switch(sourceType) {
+                case "camera":
+                    sourceLabel.textContent = "Camera Index:";
+                    sourceInput.placeholder = "0, 1, 2...";
+                    sourceInput.value = "0";
+                    break;
+                case "file":
+                    sourceLabel.textContent = "Video File Path:";
+                    sourceInput.placeholder = "/path/to/video.mp4";
+                    sourceInput.value = "";
+                    break;
+                case "rtsp":
+                    sourceLabel.textContent = "RTSP URL:";
+                    sourceInput.placeholder = "rtsp://camera_ip:port/stream";
+                    sourceInput.value = "";
+                    break;
+                case "custom":
+                    sourceLabel.textContent = "Source:";
+                    sourceInput.placeholder = "Enter source";
+                    sourceInput.value = "";
+                    break;
+            }
+        }
+
         async function start() {
             try {
+                const source = document.getElementById("source-input").value || "0";
+                
                 const response = await fetch(`${API_BASE}/start`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ source: "0" })
+                    body: JSON.stringify({ source: source })
                 });
 
                 if (response.ok) {
+                    const data = await response.json();
                     document.getElementById("start-btn").disabled = true;
                     document.getElementById("stop-btn").disabled = false;
+                    document.getElementById("source-type").disabled = true;
+                    document.getElementById("source-input").disabled = true;
                     streamActive = true;
                     
                     // Start streaming
                     const stream = document.getElementById("video-stream");
                     stream.src = `${API_BASE}/video_feed?t=${Date.now()}`;
+                } else {
+                    const error = await response.json();
+                    alert("Error: " + (error.error || response.statusText));
                 }
             } catch (error) {
                 alert("Error: " + error.message);
@@ -131,6 +210,8 @@
                 await fetch(`${API_BASE}/stop`, { method: "POST" });
                 document.getElementById("start-btn").disabled = false;
                 document.getElementById("stop-btn").disabled = true;
+                document.getElementById("source-type").disabled = false;
+                document.getElementById("source-input").disabled = false;
                 streamActive = false;
                 
                 const stream = document.getElementById("video-stream");
