@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weapon Detection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-container {
+            margin-bottom: 20px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #video-stream {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #start-btn {
+            background: #10b981;
+            color: white;
+        }
+
+        #start-btn:hover:not(:disabled) {
+            background: #059669;
+        }
+
+        #start-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        #stop-btn {
+            background: #ef4444;
+            color: white;
+        }
+
+        #stop-btn:hover:not(:disabled) {
+            background: #dc2626;
+        }
+
+        #stop-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="video-container">
+            <img id="video-stream" src="" alt="Live Feed" style="max-width: 100%; border: none;">
+        </div>
+        <div class="controls">
+            <button id="start-btn" onclick="start()">Start</button>
+            <button id="stop-btn" onclick="stop()" disabled>Stop</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:5000/api";
+        let streamActive = false;
+
+        async function start() {
+            try {
+                const response = await fetch(`${API_BASE}/start`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ source: "0" })
+                });
+
+                if (response.ok) {
+                    document.getElementById("start-btn").disabled = true;
+                    document.getElementById("stop-btn").disabled = false;
+                    streamActive = true;
+                    
+                    // Start streaming
+                    const stream = document.getElementById("video-stream");
+                    stream.src = `${API_BASE}/video_feed?t=${Date.now()}`;
+                }
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+
+        async function stop() {
+            try {
+                await fetch(`${API_BASE}/stop`, { method: "POST" });
+                document.getElementById("start-btn").disabled = false;
+                document.getElementById("stop-btn").disabled = true;
+                streamActive = false;
+                
+                const stream = document.getElementById("video-stream");
+                stream.src = "";
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

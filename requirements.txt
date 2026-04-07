@@ -6,5 +6,6 @@ dotenv
 transformers
 accelerate
 torch
-streamlit
+flask
+flask-cors
 pillow
