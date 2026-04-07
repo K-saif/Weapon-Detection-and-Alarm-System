@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weapon Detection Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.1);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .video-section {
+            background: #1a1f3a;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-container {
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 2px solid #333;
+            position: relative;
+        }
+
+        #video-stream {
+            width: 100%;
+            height: auto;
+            display: block;
+            min-height: 400px;
+        }
+
+        .no-stream {
+            width: 100%;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            color: #666;
+            font-size: 18px;
+        }
+
+        .source-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .source-selector label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #aaa;
+            grid-column: 1 / -1;
+        }
+
+        .source-selector select,
+        .source-selector input {
+            padding: 10px;
+            font-size: 13px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background: #252d47;
+            color: #fff;
+            transition: all 0.3s;
+        }
+
+        .source-selector select:focus,
+        .source-selector input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #2a3454;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #start-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        #start-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        #start-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        #stop-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        #stop-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);
+        }
+
+        #stop-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: #1a1f3a;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid #252d47;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #aaa;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: #252d47;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 3px solid #667eea;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .stat-item.alert .stat-value {
+            color: #ef4444;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #252d47;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #999;
+        }
+
+        .status-dot.active {
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            font-size: 13px;
+            flex: 1;
+        }
+
+        .slider-container {
+            margin-bottom: 15px;
+        }
+
+        .slider-label {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #252d47;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #764ba2;
+            transform: scale(1.1);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        input[type="range"]::-moz-range-thumb:hover {
+            background: #764ba2;
+            transform: scale(1.1);
+        }
+
+        .alerts-list {
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .alert-item {
+            background: #252d47;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid #ef4444;
+            font-size: 12px;
+        }
+
+        .alert-item-time {
+            color: #999;
+            font-size: 11px;
+        }
+
+        .alert-item-text {
+            color: #e0e0e0;
+            margin-top: 4px;
+        }
+
+        .no-alerts {
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            padding: 20px 0;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-track {
+            background: #1a1f3a;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 3px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+
+        .alerts-list {
+            scrollbar-color: #444 #1a1f3a;
+            scrollbar-width: thin;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .source-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        footer {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Weapon Detection Dashboard</h1>
+        <p>Real-time monitoring and alert management system</p>
+    </div>
+
+    <div class="dashboard">
+        <div class="video-section">
+            <div class="source-selector">
+                <label>Source Configuration</label>
+                <select id="source-type" onchange="updateSourceInput()">
+                    <option value="camera">Camera</option>
+                    <option value="file">Video File</option>
+                    <option value="rtsp">IP Camera (RTSP)</option>
+                    <option value="custom">Custom</option>
+                </select>
+                <input type="text" id="source-input" value="0" placeholder="Enter source">
+            </div>
+
+            <div class="video-container">
+                <img id="video-stream" style="display:none;" alt="Live Feed">
+                <div id="no-stream" class="no-stream">Click Start to begin detection</div>
+            </div>
+
+            <div class="controls">
+                <button id="start-btn" onclick="start()">▶ Start Detection</button>
+                <button id="stop-btn" onclick="stop()" disabled>⏹ Stop Detection</button>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="card">
+                <div class="card-title">Status</div>
+                <div class="status-indicator">
+                    <div class="status-dot" id="status-indicator"></div>
+                    <div class="status-text" id="status-text">Ready</div>
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Frames</div>
+                        <div class="stat-value" id="frame-count">0</div>
+                    </div>
+                    <div class="stat-item alert">
+                        <div class="stat-label">Alerts</div>
+                        <div class="stat-value" id="alert-count">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Detections</div>
+                        <div class="stat-value" id="detection-count">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Source</div>
+                        <div class="stat-value" id="source-display" style="font-size: 14px;">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Settings</div>
+                
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Confidence Threshold</span>
+                        <span id="conf-value">0.4</span>
+                    </div>
+                    <input type="range" min="0.1" max="1.0" step="0.1" value="0.4" 
+                           id="conf-slider" onchange="updateConfidence()">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Recent Alerts</div>
+                <div class="alerts-list scrollbar-custom" id="alerts-container">
+                    <div class="no-alerts">No alerts yet</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Weapon Detection System | Real-time Inference with Tracking & Alerting</p>
+    </footer>
+
+    <script>
+        const API_BASE = "http://localhost:5000/api";
+        let streamActive = false;
+        let statsInterval = null;
+        let alertsInterval = null;
+
+        function updateSourceInput() {
+            const sourceType = document.getElementById("source-type").value;
+            const sourceInput = document.getElementById("source-input");
+            
+            switch(sourceType) {
+                case "camera":
+                    sourceInput.placeholder = "0, 1, 2...";
+                    sourceInput.value = "0";
+                    break;
+                case "file":
+                    sourceInput.placeholder = "/path/to/video.mp4";
+                    sourceInput.value = "";
+                    break;
+                case "rtsp":
+                    sourceInput.placeholder = "rtsp://camera_ip:port/stream";
+                    sourceInput.value = "";
+                    break;
+                case "custom":
+                    sourceInput.placeholder = "Enter source";
+                    sourceInput.value = "";
+                    break;
+            }
+        }
+
+        async function updateStats() {
+            try {
+                const detectionRes = await fetch(`${API_BASE}/detections`);
+                const alertsRes = await fetch(`${API_BASE}/alerts`);
+                
+                if (detectionRes.ok && alertsRes.ok) {
+                    const detData = await detectionRes.json();
+                    const alertData = await alertsRes.json();
+                    
+                    document.getElementById("frame-count").textContent = detData.frame_count;
+                    document.getElementById("detection-count").textContent = detData.detections.length;
+                    document.getElementById("source-display").textContent = detData.source === "None" ? "-" : detData.source;
+                    document.getElementById("alert-count").textContent = alertData.length;
+                    
+                    updateAlertsList(alertData);
+                }
+            } catch (error) {
+                console.error("Error fetching stats:", error);
+            }
+        }
+
+        function updateAlertsList(alerts) {
+            const container = document.getElementById("alerts-container");
+            
+            if (!alerts || alerts.length === 0) {
+                container.innerHTML = '<div class="no-alerts">No alerts yet</div>';
+                return;
+            }
+            
+            container.innerHTML = alerts.slice(-10).reverse().map(alert => `
+                <div class="alert-item">
+                    <div class="alert-item-time">
+                        Frame: ${alert.frame_number || 'N/A'} | Track: ${alert.track_id || 'N/A'}
+                    </div>
+                    <div class="alert-item-text">
+                        🚨 Weapon Detected (${(alert.confidence * 100).toFixed(1)}%)
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function updateConfidence() {
+            const conf = document.getElementById("conf-slider").value;
+            document.getElementById("conf-value").textContent = conf;
+        }
+
+        async function start() {
+            try {
+                const source = document.getElementById("source-input").value || "0";
+                
+                const response = await fetch(`${API_BASE}/start`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ source: source })
+                });
+
+                if (response.ok) {
+                    document.getElementById("start-btn").disabled = true;
+                    document.getElementById("stop-btn").disabled = false;
+                    document.getElementById("source-type").disabled = true;
+                    document.getElementById("source-input").disabled = true;
+                    
+                    const video = document.getElementById("video-stream");
+                    const noStream = document.getElementById("no-stream");
+                    video.style.display = "block";
+                    noStream.style.display = "none";
+                    
+                    streamActive = true;
+                    document.getElementById("status-indicator").classList.add("active");
+                    document.getElementById("status-text").textContent = "Running - Detecting...";
+                    
+                    // Start streaming with cache busting
+                    video.src = `${API_BASE}/video_feed?t=${Date.now()}`;
+                    
+                    // Start polling stats
+                    if (statsInterval) clearInterval(statsInterval);
+                    statsInterval = setInterval(updateStats, 1000);
+                    
+                    if (alertsInterval) clearInterval(alertsInterval);
+                    alertsInterval = setInterval(updateStats, 2000);
+                    
+                    updateStats();
+                } else {
+                    const error = await response.json();
+                    alert("Error: " + (error.error || response.statusText));
+                }
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+
+        async function stop() {
+            try {
+                await fetch(`${API_BASE}/stop`, { method: "POST" });
+                document.getElementById("start-btn").disabled = false;
+                document.getElementById("stop-btn").disabled = true;
+                document.getElementById("source-type").disabled = false;
+                document.getElementById("source-input").disabled = false;
+                
+                const video = document.getElementById("video-stream");
+                const noStream = document.getElementById("no-stream");
+                video.style.display = "none";
+                noStream.style.display = "flex";
+                noStream.textContent = "Detection stopped. Click Start to begin.";
+                
+                streamActive = false;
+                document.getElementById("status-indicator").classList.remove("active");
+                document.getElementById("status-text").textContent = "Stopped";
+                
+                if (statsInterval) clearInterval(statsInterval);
+                if (alertsInterval) clearInterval(alertsInterval);
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+
+        // Initial setup
+        updateSourceInput();
+    </script>
+</body>
+</html>
