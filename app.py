@@ -227,6 +227,12 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/alerts")
+def alerts_page():
+    """Serve the alerts page."""
+    return render_template("alerts.html")
+
+
 @app.route("/api/detections")
 def get_detections():
     """Get current detections."""
@@ -357,6 +363,22 @@ def set_config():
     
     logger.info(f"Configuration updated: {data}")
     return jsonify({"status": "updated", "config": current_config.copy()})
+
+
+@app.route("/api/clear-alerts", methods=["POST"])
+def clear_alerts():
+    """Clear all alert history."""
+    try:
+        alert_file = Path("alerts/Alert_history.json")
+        if alert_file.exists():
+            with open(alert_file, "w") as f:
+                json.dump([], f)
+            logger.info("Alert history cleared")
+            return jsonify({"status": "cleared"})
+        return jsonify({"status": "no alerts to clear"})
+    except Exception as e:
+        logger.error(f"Error clearing alerts: {e}")
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":

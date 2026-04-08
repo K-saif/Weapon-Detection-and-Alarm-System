@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts History - Weapon Detection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header-content p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .controls {
+            background: #1a1f3a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .control-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+
+        select, input[type="text"] {
+            padding: 10px 12px;
+            font-size: 13px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background: #252d47;
+            color: #fff;
+            transition: all 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #2a3454;
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.2);
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #1a1f3a;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #aaa;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .stat-card.alerts .stat-value {
+            color: #ef4444;
+        }
+
+        .alerts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .alert-card {
+            background: #1a1f3a;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #252d47;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .alert-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(239, 68, 68, 0.2);
+            border-color: #667eea;
+        }
+
+        .alert-thumbnail {
+            width: 100%;
+            height: 200px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alert-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .alert-thumbnail.no-image {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .alert-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ef4444;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .alert-content {
+            padding: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .alert-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ef4444;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .alert-time {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .alert-details {
+            font-size: 12px;
+            color: #ccc;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #252d47;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #999;
+            font-weight: 600;
+            min-width: 100px;
+        }
+
+        .detail-value {
+            color: #e0e0e0;
+            font-weight: 500;
+            text-align: right;
+            flex: 1;
+        }
+
+        .alert-actions {
+            padding: 10px;
+            margin-top: 10px;
+            border-top: 1px solid #252d47;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            flex: 1;
+            padding: 8px;
+            font-size: 11px;
+            border: 1px solid #444;
+            background: #252d47;
+            color: #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .btn-small:hover {
+            background: #2a3454;
+            border-color: #667eea;
+            color: #fff;
+        }
+
+        .no-alerts {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            background: #1a1f3a;
+            border-radius: 10px;
+        }
+
+        .no-alerts-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .no-alerts-text {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .no-alerts-subtext {
+            font-size: 13px;
+            color: #555;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #252d47;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .alerts-container {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .control-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            select, input[type="text"] {
+                width: 100%;
+            }
+
+            .stat-card {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>🚨 Alerts History</h1>
+            <p>View and manage weapon detection alerts</p>
+        </div>
+        <a href="/" class="back-btn">← Back to Dashboard</a>
+    </div>
+
+    <div class="controls">
+        <div class="control-group">
+            <label>Sort By:</label>
+            <select id="sort-select" onchange="applyFilters()">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="confidence">Highest Confidence</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <label>Filter:</label>
+            <select id="filter-select" onchange="applyFilters()">
+                <option value="all">All Alerts</option>
+                <option value="high">High Confidence (>90%)</option>
+                <option value="medium">Medium Confidence (70-90%)</option>
+            </select>
+        </div>
+        <button class="btn-primary" onclick="refreshAlerts()">🔄 Refresh</button>
+        <button class="btn-danger" id="clear-btn" onclick="clearAllAlerts()" disabled>🗑️ Clear All</button>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-card alerts">
+            <div class="stat-label">Total Alerts</div>
+            <div class="stat-value" id="total-alerts">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Average Confidence</div>
+            <div class="stat-value" id="avg-confidence">0%</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Unique Detections</div>
+            <div class="stat-value" id="unique-detections">0</div>
+        </div>
+    </div>
+
+    <div class="alerts-container" id="alerts-container">
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Loading alerts...</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Weapon Detection System | Alerts Management Module</p>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:5000/api";
+        let allAlerts = [];
+
+        // Load alerts on page load
+        window.addEventListener('load', () => {
+            refreshAlerts();
+            // Refresh every 5 seconds
+            setInterval(refreshAlerts, 5000);
+        });
+
+        async function refreshAlerts() {
+            try {
+                const response = await fetch(`${API_BASE}/alerts`);
+                if (response.ok) {
+                    allAlerts = await response.json();
+                    updateStats();
+                    applyFilters();
+                    
+                    // Enable/disable clear button based on whether there are alerts
+                    const clearBtn = document.getElementById('clear-btn');
+                    clearBtn.disabled = allAlerts.length === 0;
+                }
+            } catch (error) {
+                console.error("Error loading alerts:", error);
+                showError("Failed to load alerts");
+            }
+        }
+
+        function updateStats() {
+            const totalAlerts = allAlerts.length;
+            document.getElementById('total-alerts').textContent = totalAlerts;
+
+            if (totalAlerts === 0) {
+                document.getElementById('avg-confidence').textContent = '0%';
+                document.getElementById('unique-detections').textContent = '0';
+                return;
+            }
+
+            const totalConfidence = allAlerts.reduce((sum, alert) => sum + (alert.confidence || 0), 0);
+            const avgConfidence = ((totalConfidence / totalAlerts) * 100).toFixed(1);
+            document.getElementById('avg-confidence').textContent = avgConfidence + '%';
+
+            const uniqueTrackIds = new Set(allAlerts.map(a => a.track_id));
+            document.getElementById('unique-detections').textContent = uniqueTrackIds.size;
+        }
+
+        function applyFilters() {
+            let filtered = [...allAlerts];
+            
+            // Apply confidence filter
+            const filterLevel = document.getElementById('filter-select').value;
+            if (filterLevel === 'high') {
+                filtered = filtered.filter(a => a.confidence >= 0.9);
+            } else if (filterLevel === 'medium') {
+                filtered = filtered.filter(a => a.confidence >= 0.7 && a.confidence < 0.9);
+            }
+
+            // Apply sorting
+            const sortBy = document.getElementById('sort-select').value;
+            if (sortBy === 'newest') {
+                filtered.sort((a, b) => b.frame_number - a.frame_number);
+            } else if (sortBy === 'oldest') {
+                filtered.sort((a, b) => a.frame_number - b.frame_number);
+            } else if (sortBy === 'confidence') {
+                filtered.sort((a, b) => b.confidence - a.confidence);
+            }
+
+            displayAlerts(filtered);
+        }
+
+        function displayAlerts(alerts) {
+            const container = document.getElementById('alerts-container');
+
+            if (!alerts || alerts.length === 0) {
+                container.innerHTML = `
+                    <div class="no-alerts" style="grid-column: 1 / -1;">
+                        <div class="no-alerts-icon">📭</div>
+                        <div class="no-alerts-text">No Alerts Found</div>
+                        <div class="no-alerts-subtext">No weapon detection alerts match your filters</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = alerts.map((alert, index) => `
+                <div class="alert-card">
+                    <div class="alert-thumbnail ${!alert.snapshot_path ? 'no-image' : ''}">
+                        ${alert.snapshot_path ? 
+                            `<img src="${alert.snapshot_path}" alt="Alert snapshot" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">` 
+                            : 'No Snapshot'}
+                        <div class="alert-badge">🚨 ALERT</div>
+                    </div>
+                    <div class="alert-content">
+                        <div class="alert-header">
+                            <div class="alert-title">Weapon Detected</div>
+                        </div>
+                        <div class="alert-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Confidence:</span>
+                                <span class="detail-value">${(alert.confidence * 100).toFixed(1)}%</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Track ID:</span>
+                                <span class="detail-value">#${alert.track_id || 'N/A'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Frame:</span>
+                                <span class="detail-value">${alert.frame_number || 'N/A'}</span>
+                            </div>
+                        </div>
+                        <div class="alert-actions">
+                            <button class="btn-small" onclick="downloadSnapshot('${alert.snapshot_path}', ${alert.track_id})">Download</button>
+                            <button class="btn-small" onclick="viewDetails(${index})">Details</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewDetails(index) {
+            const alert = allAlerts[index];
+            const message = `
+Track ID: ${alert.track_id}
+Frame: ${alert.frame_number}
+Confidence: ${(alert.confidence * 100).toFixed(1)}%
+Snapshot: ${alert.snapshot_path || 'N/A'}`;
+            alert(message);
+        }
+
+        function downloadSnapshot(path, trackId) {
+            if (!path) {
+                alert('No snapshot available for this alert');
+                return;
+            }
+            // Create a link to download the snapshot
+            const link = document.createElement('a');
+            link.href = path;
+            link.download = `alert_track_${trackId}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function clearAllAlerts() {
+            if (confirm('Are you sure you want to clear all alerts? This action cannot be undone.')) {
+                try {
+                    const response = await fetch(`${API_BASE}/clear-alerts`, { method: 'POST' });
+                    if (response.ok) {
+                        allAlerts = [];
+                        updateStats();
+                        displayAlerts([]);
+                        alert('All alerts cleared successfully');
+                    }
+                } catch (error) {
+                    console.error("Error clearing alerts:", error);
+                    alert('Failed to clear alerts');
+                }
+            }
+        }
+
+        function showError(message) {
+            const container = document.getElementById('alerts-container');
+            container.innerHTML = `
+                <div class="no-alerts" style="grid-column: 1 / -1;">
+                    <div class="no-alerts-icon">⚠️</div>
+                    <div class="no-alerts-text">Error</div>
+                    <div class="no-alerts-subtext">${message}</div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
