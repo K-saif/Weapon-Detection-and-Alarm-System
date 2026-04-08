@@ -1,6 +1,6 @@
 """Flask server with integrated weapon detection using WeaponDetectionRunner."""
 
-from flask import Flask, render_template, jsonify, request, Response
+from flask import Flask, render_template, jsonify, request, Response, send_file
 from flask_cors import CORS
 import json
 from pathlib import Path
@@ -9,6 +9,7 @@ from datetime import datetime
 import cv2
 import logging
 import argparse
+import os
 
 # Import weapon detection components
 from weapon_detection.config import build_default_config
@@ -278,10 +279,32 @@ def video_feed():
 
 @app.route("/api/alerts")
 def get_alerts():
-    """Get recent alerts."""
+    """Get all alerts."""
     alerts = load_alert_history()
-    # Return last 20 alerts
-    return jsonify(alerts[-20:] if alerts else [])
+    # Convert paths to API image endpoint
+    for alert in alerts:
+        if "snapshot_path" in alert:
+            # Extract filename from path
+            filename = alert["snapshot_path"].replace("\\", "/").split("/")[-1]
+            # Update to use API image serving endpoint
+            alert["snapshot_path"] = f"/api/image/{filename}"
+    # Return all alerts (sorted by newest first)
+    return jsonify(list(reversed(alerts)) if alerts else [])
+
+
+@app.route("/api/image/<filename>")
+def get_image(filename):
+    """Serve alert images."""
+    try:
+        image_path = Path("alerts") / filename
+        if image_path.exists():
+            return send_file(str(image_path), mimetype='image/jpeg')
+        else:
+            logger.warning(f"Image not found: {image_path}")
+            return jsonify({"error": "Image not found"}), 404
+    except Exception as e:
+        logger.error(f"Error serving image: {e}")
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/api/stats")

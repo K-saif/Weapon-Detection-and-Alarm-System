@@ -207,18 +207,159 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .alert-thumbnail:hover {
+            transform: scale(1.05);
         }
 
         .alert-thumbnail img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: all 0.3s;
+        }
+
+        .alert-thumbnail:hover img {
+            filter: brightness(1.1);
         }
 
         .alert-thumbnail.no-image {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff;
             font-size: 14px;
+            cursor: not-allowed;
+        }
+
+        /* Lightbox Modal Styles */
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox-modal.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            position: relative;
+            width: 90%;
+            height: 90%;
+            max-width: 1000px;
+            max-height: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(102, 126, 234, 0.3);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10001;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            pointer-events: none;
+            z-index: 10001;
+        }
+
+        .lightbox-nav button {
+            pointer-events: all;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lightbox-nav button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .lightbox-nav button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .lightbox-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #e0e0e0;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            z-index: 10001;
+        }
+
+        .lightbox-info-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ef4444;
+        }
+
+        .lightbox-info-item {
+            font-size: 12px;
+            margin: 4px 0;
+        }
+
+        .preview-indicator {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(102, 126, 234, 0.8);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
         }
 
         .alert-badge {
@@ -397,6 +538,34 @@
             .stat-card {
                 min-width: 100%;
             }
+
+            .lightbox-content {
+                width: 95%;
+                height: 85%;
+            }
+
+            .lightbox-nav {
+                padding: 0 10px;
+            }
+
+            .lightbox-nav button {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .lightbox-close {
+                width: 40px;
+                height: 40px;
+                font-size: 24px;
+            }
+
+            .lightbox-info {
+                font-size: 11px;
+                padding: 10px;
+                bottom: 10px;
+                left: 10px;
+            }
         }
     </style>
 </head>
@@ -452,6 +621,25 @@
         </div>
     </div>
 
+    <!-- Lightbox Modal for Image Preview -->
+    <div class="lightbox-modal" id="lightbox-modal">
+        <div class="lightbox-content">
+            <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+            <div class="lightbox-nav">
+                <button onclick="prevImage()" id="prev-btn">❮</button>
+                <button onclick="nextImage()" id="next-btn">❯</button>
+            </div>
+            <img id="lightbox-image" class="lightbox-image" alt="Alert preview">
+            <div class="lightbox-info">
+                <div class="lightbox-info-title">Alert Details</div>
+                <div class="lightbox-info-item">Confidence: <strong id="lightbox-confidence">0%</strong></div>
+                <div class="lightbox-info-item">Track ID: <strong id="lightbox-track-id">#0</strong></div>
+                <div class="lightbox-info-item">Frame: <strong id="lightbox-frame">0</strong></div>
+                <div class="lightbox-info-item">Image: <strong id="lightbox-counter">0/0</strong></div>
+            </div>
+        </div>
+    </div>
+
     <div class="footer">
         <p>Weapon Detection System | Alerts Management Module</p>
     </div>
@@ -459,13 +647,26 @@
     <script>
         const API_BASE = "http://localhost:5000/api";
         let allAlerts = [];
+        let currentLightboxAlerts = [];
+        let currentImageIndex = 0;
 
         // Load alerts on page load
         window.addEventListener('load', () => {
             refreshAlerts();
             // Refresh every 5 seconds
             setInterval(refreshAlerts, 5000);
+            // Add keyboard event listeners
+            document.addEventListener('keydown', handleKeyboard);
         });
+
+        function handleKeyboard(e) {
+            const modal = document.getElementById('lightbox-modal');
+            if (!modal.classList.contains('active')) return;
+            
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') prevImage();
+            if (e.key === 'ArrowRight') nextImage();
+        }
 
         async function refreshAlerts() {
             try {
@@ -524,6 +725,7 @@
                 filtered.sort((a, b) => b.confidence - a.confidence);
             }
 
+            currentLightboxAlerts = filtered;
             displayAlerts(filtered);
         }
 
@@ -543,9 +745,10 @@
 
             container.innerHTML = alerts.map((alert, index) => `
                 <div class="alert-card">
-                    <div class="alert-thumbnail ${!alert.snapshot_path ? 'no-image' : ''}">
+                    <div class="alert-thumbnail ${!alert.snapshot_path ? 'no-image' : ''}" onclick="${alert.snapshot_path ? `openLightbox(${index})` : 'null'}">
                         ${alert.snapshot_path ? 
-                            `<img src="${alert.snapshot_path}" alt="Alert snapshot" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">` 
+                            `<img src="${alert.snapshot_path}" alt="Alert snapshot" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                             <div class="preview-indicator">👁️ Click to Preview</div>` 
                             : 'No Snapshot'}
                         <div class="alert-badge">🚨 ALERT</div>
                     </div>
@@ -574,6 +777,48 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        function openLightbox(index) {
+            if (currentLightboxAlerts.length === 0) return;
+            
+            currentImageIndex = index;
+            const alert = currentLightboxAlerts[index];
+            
+            if (!alert.snapshot_path) return;
+            
+            // Update lightbox content
+            document.getElementById('lightbox-image').src = alert.snapshot_path;
+            document.getElementById('lightbox-confidence').textContent = (alert.confidence * 100).toFixed(1) + '%';
+            document.getElementById('lightbox-track-id').textContent = '#' + (alert.track_id || 'N/A');
+            document.getElementById('lightbox-frame').textContent = alert.frame_number || 'N/A';
+            document.getElementById('lightbox-counter').textContent = (index + 1) + '/' + currentLightboxAlerts.length;
+            
+            // Update navigation buttons
+            document.getElementById('prev-btn').disabled = index === 0;
+            document.getElementById('next-btn').disabled = index === currentLightboxAlerts.length - 1;
+            
+            // Show modal
+            document.getElementById('lightbox-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox-modal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            currentImageIndex = 0;
+        }
+
+        function prevImage() {
+            if (currentImageIndex > 0) {
+                openLightbox(currentImageIndex - 1);
+            }
+        }
+
+        function nextImage() {
+            if (currentImageIndex < currentLightboxAlerts.length - 1) {
+                openLightbox(currentImageIndex + 1);
+            }
         }
 
         function viewDetails(index) {
