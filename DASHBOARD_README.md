@@ -1,145 +1,198 @@
-# Simple Dashboard - Quick Start
+<div align="center">
 
-A lightweight web-based dashboard for real-time weapon detection with integrated inference engine.
+# Dashboard UI - Real-Time Monitoring
 
-## ✨ Features
+A web-based dashboard for the Weapon Detection and Alarm System providing real-time visualization, monitoring, and management of detection events.
 
-✅ **Integrated Detection** - Full inference runs on dashboard start  
-✅ Simple, clean dark UI  
-✅ Real-time detection display  
-✅ Input source selection (webcam, video file, RTSP stream)  
-✅ Live alert display  
-✅ Minimal dependencies  
-✅ Single command to run (no need for two terminals!)
+</div>
 
-## 📦 Installation
+## Overview
+
+The dashboard provides a centralized interface to monitor weapon detection events in real-time. It displays live video feeds with detection overlays, alert history, system statistics, and configuration management.
+
+## Features
+
+- **Real-Time Video Feed**: Live streaming video with detection bounding boxes and confidence scores
+- **Alert Notifications**: Instant notifications when weapons are detected
+- **Alert History**: Searchable and filterable log of all detection events
+- **Incident Snapshots**: View captured images of detected weapons
+- **System Statistics**: Real-time metrics and detection analytics
+- **Configuration Panel**: Adjust detection parameters without restarting the system
+- **Multi-Channel Alerts**: Monitor email and Telegram alert status
+- **Track Information**: View detailed tracking data for detected objects
+
+## Setup
+
+### Prerequisites
+
+Ensure you have installed the main system dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-This installs:
-- `flask` - Web server
-- `flask-cors` - Cross-origin requests  
-- `opencv-python` - Video processing
-- `ultralytics` - YOLO detection
-- Other dependencies
+The dashboard requires:
+- Python 3.8+
+- Flask (included in requirements.txt)
+- Modern web browser (Chrome, Firefox, Safari, Edge)
 
-## 🚀 Quick Start (ONE Command!)
+### Installation
 
-### Windows
-```bash
-run_dashboard.bat
-```
+1. The dashboard files are already included in the project:
+   - `dashboard.html` — Web UI interface
+   - `app.py` — Flask backend server
 
-### Linux/Mac
-```bash
-./run_dashboard.sh
-```
+2. No additional installation is required beyond the main system setup.
 
-### Manual Start
+## Running the Dashboard
+
+### Start the Dashboard Server
+
 ```bash
 python app.py
 ```
 
-Then open: **http://localhost:5000**
+The server will start on `http://localhost:5000` or the configured port.
 
-## 📖 Usage
+### Access the Dashboard
 
-1. **Open Dashboard**: Go to http://localhost:5000
-2. **Select Input Source**: 
-   - Choose from dropdown (Webcam/Camera/Video/RTSP)
-   - Or enter custom path
-3. **Click "▶️ Start"**: Detection begins immediately
-4. **View Results**:
-   - Real-time detections displayed
-   - Frame count updates in real-time
-   - Recent alerts shown below
-5. **Click "⏹️ Stop"**: Stop detection
-
-**That's it!** No need to run separate commands.
-
-## 📁 Project Structure
+Open your web browser and navigate to:
 
 ```
-.
-├── app.py                      # Flask + Detection (integrated)
-├── models/
-│   └── best.pt                 # YOLO model
-├── templates/
-│   └── index.html              # Dashboard UI
-├── alerts/
-│   └── Alert_history.json      # Alert history
-├── run_dashboard.bat           # Windows launcher
-├── run_dashboard.sh            # Linux/Mac launcher
-└── requirements.txt            # Dependencies
+http://localhost:5000
 ```
 
-## 🔌 API Endpoints
 
-- `GET /` - Dashboard page
-- `GET /api/detections` - Current detections & frames
-- `GET /api/alerts` - Recent alerts
-- `GET /api/stats` - Detection statistics  
-- `POST /api/start` - Start detection with source
-- `POST /api/stop` - Stop detection
-- `GET /api/config` - Get configuration
-- `POST /api/config` - Update configuration
+## Configuration
 
-## 🎥 Supported Sources
+### Dashboard Settings
 
-| Input | Example | Usage |
-|-------|---------|-------|
-| Webcam | `0` | Default camera |
-| Camera | `/dev/video0` | Specific camera |
-| Video | `video.mp4` | Video file path |
-| RTSP | `rtsp://...` | IP camera stream |
-| Image | `image.jpg` | Single image |
+Edit configuration in `app.py` or `.env` file (if supported):
 
-## ⚙️ How It Works
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `HOST` | Dashboard server host | `localhost` |
+| `PORT` | Dashboard server port | `5000` |
+| `DEBUG` | Enable Flask debug mode | `False` |
+| `UPDATE_INTERVAL` | Real-time update frequency (ms) | `1000` |
 
-1. **Dashboard Runs**: Flask server starts on port 5000
-2. **You Click Start**: Selects source and starts detection thread
-3. **Live Inference**: YOLO model processes frames in background
-4. **Real-Time Display**: Results update every 500ms on dashboard
-5. **Auto-Save**: Detections logged to `alerts/Alert_history.json`
+### Alert Display
 
-## 🆘 Troubleshooting
+The dashboard connects to the alert system through:
+- `/alerts/Alert_history.json` — Alert history log
+- Real-time event streaming from the detection system
 
-**"Models/best.pt not found"?**
-- Make sure model file exists: `ls models/best.pt`
+## Usage Guide (Under development)
 
-**Webcam not detected?**
-- Try `0` for default webcam
-- Try `/dev/video0` on Linux
-- Check if another app is using camera
+### Dashboard Layout
 
-**Port 5000 already in use?**
-```bash
-# Windows
-netstat -ano | findstr :5000
-taskkill /PID <PID> /F
+**Header:**
+- System status indicator
+- Navigation menu
+- Settings access
 
-# Linux/Mac
-lsof -i :5000
-kill -9 <PID>
-```
+**Main Panel:**
+- Live video feed with detections
+- Current frame statistics
+- Active tracked objects
 
-**Slow detection?**
-- Check GPU availability (CUDA)
-- Reduce image size in config
-- Lower confidence threshold
+**Alert Section:**
+- Recent alerts (last 24 hours)
+- Alert statistics
+- Filtered alert history
 
-## ⚡ Performance
+**System Info:**
+- Detection model information
+- FPS and latency metrics
+- Connected channels status
 
-- Real-time processing on CPU
-- GPU acceleration available (if installed)
-- ~30 FPS on modern GPU
-- ~5-10 FPS on CPU
+### Viewing Alerts
 
-## 📝 Notes
+1. Navigate to the **Alerts** tab
+2. View the alert history table
+3. Click on any alert to view:
+   - Timestamp
+   - Detection class and confidence
+   - Snapshot of detection
+   - Track ID and duration
 
-- Dashboard updates every 500ms
-- Alerts refresh every 2 seconds
-- Supports webcam, video files, and streaming sources
-- All detections logged automatically
+### Filtering and Search
+
+Use the search and filter options to find specific events:
+
+- **Date Range**: Filter by time period
+- **Confidence**: Filter by detection confidence threshold
+- **Class**: Filter by detected weapon type
+- **Status**: Filter by alert status (sent, pending, failed)
+
+### Configuration Panel
+
+Access system settings from the dashboard:
+
+1. Click **Settings** in the header
+2. Adjust detection parameters:
+   - Confidence threshold
+   - Persistence frames
+   - Cooldown duration
+   - Alert channels
+3. Changes take effect immediately or on next detection cycle
+
+
+## API Endpoints (Advanced)
+
+If you want to integrate the dashboard with external systems, the following endpoints are available:
+
+| Endpoint | Method | Description |
+|----------|--------|---|
+| `/api/alerts` | GET | Get alert history |
+| `/api/stats` | GET | Get system statistics |
+| `/api/video` | GET | Get video stream |
+| `/api/config` | GET/POST | Get/update configuration |
+
+## Development
+
+### Frontend
+
+The dashboard frontend is built with:
+- **HTML5** for structure
+- **CSS3** for styling and responsive design
+- **JavaScript (Vanilla JS)** for interactivity and real-time updates
+
+### Backend
+
+The backend (`app.py`) uses:
+- **Flask** for web server
+- **JSON** for data interchange
+- **Threading** for real-time updates
+
+### Customization
+
+To customize the dashboard:
+
+1. Edit `dashboard.html` for UI changes
+2. Modify `app.py` for backend logic
+3. Update styles in the `<style>` section
+4. Add new API endpoints as needed
+
+## Future Enhancements
+
+- Export reports and incident logs
+- User authentication and role-based access
+- Multi-user support with permissions
+- Advanced analytics and heatmaps
+- Mobile-responsive design improvements
+- Integration with external alerting systems
+- Machine learning-based anomaly detection
+- Database backend for scalability
+
+## Support
+
+For issues or feature requests related to the dashboard:
+
+1. Check the [main README](README.md) for general system documentation
+2. Review troubleshooting section above
+3. Open an issue in the project repository
+
+## License
+
+This dashboard is part of the Weapon Detection and Alarm System, licensed under the [MIT License](LICENSE).

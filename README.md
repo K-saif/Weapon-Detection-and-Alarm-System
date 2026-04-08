@@ -132,6 +132,18 @@ For training custom models follow the [Ultralytics YOLO training guide](https://
 ```
 
 
+## <div>Dashboard UI (Under Development)</div>
+
+A web-based dashboard is currently under development to provide real-time monitoring and visualization of weapon detection events. The dashboard will offer:
+
+- Real-time video feed with detection overlays
+- Live alert notifications and history
+- System configuration and management interface
+- Detection statistics and insights
+- Easy access to incident snapshots and logs
+
+Check the [Dashboard README](DASHBOARD_README.md) for setup and usage details.
+
 ## <div>CLI Options</div>
 
 | Argument | Type | Default | Description |
