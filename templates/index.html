@@ -300,6 +300,41 @@
             transform: scale(1.1);
         }
 
+        /* Select and Text Input Styling */
+        select, input[type="text"], input[type="checkbox"] {
+            padding: 10px;
+            font-size: 13px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background: #252d47;
+            color: #fff;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+        }
+
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #2a3454;
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.2);
+        }
+
+        select option {
+            background: #252d47;
+            color: #fff;
+        }
+
         .alerts-list {
             max-height: 250px;
             overflow-y: auto;
@@ -430,16 +465,115 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-title">Settings</div>
+            <div class="card" style="max-height: 600px; overflow-y: auto;">
+                <div class="card-title">⚙️ Detection Settings</div>
                 
+                <!-- Confidence Threshold -->
                 <div class="slider-container">
                     <div class="slider-label">
                         <span>Confidence Threshold</span>
                         <span id="conf-value">0.4</span>
                     </div>
                     <input type="range" min="0.1" max="1.0" step="0.1" value="0.4" 
-                           id="conf-slider" onchange="updateConfidence()">
+                           id="conf-slider" onchange="updateConfig('confidence_threshold')">
+                </div>
+
+                <!-- Device Selection -->
+                <div class="slider-container">
+                    <label style="font-size: 12px; color: #aaa; text-transform: uppercase;">Device</label>
+                    <select id="device-select" onchange="updateConfig('device')">
+                        <option value="cpu">CPU</option>
+                        <option value="gpu">GPU</option>
+                    </select>
+                </div>
+
+                <!-- Image Size -->
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Image Size</span>
+                        <span id="imgsz-value">640</span>
+                    </div>
+                    <input type="range" min="320" max="1280" step="64" value="640" 
+                           id="imgsz-slider" onchange="updateConfig('imgsz')">
+                </div>
+
+                <!-- Persist Frames -->
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Persist Frames</span>
+                        <span id="persist-value">8</span>
+                    </div>
+                    <input type="range" min="1" max="30" step="1" value="8" 
+                           id="persist-slider" onchange="updateConfig('persist_frames')">
+                </div>
+
+                <!-- Cooldown -->
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Alert Cooldown (sec)</span>
+                        <span id="cooldown-value">60</span>
+                    </div>
+                    <input type="range" min="10" max="300" step="10" value="60" 
+                           id="cooldown-slider" onchange="updateConfig('cooldown')">
+                </div>
+
+                <!-- Stale Frames -->
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Stale Frames</span>
+                        <span id="stale-value">30</span>
+                    </div>
+                    <input type="range" min="5" max="100" step="5" value="30" 
+                           id="stale-slider" onchange="updateConfig('stale_frames')">
+                </div>
+
+                <!-- Workers -->
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Alert Workers</span>
+                        <span id="workers-value">4</span>
+                    </div>
+                    <input type="range" min="1" max="16" step="1" value="4" 
+                           id="workers-slider" onchange="updateConfig('workers')">
+                </div>
+
+                <!-- Output Directory -->
+                <div class="slider-container">
+                    <label style="font-size: 12px; color: #aaa; text-transform: uppercase;">Output Directory</label>
+                    <input type="text" id="output-dir" value="alerts" placeholder="Output directory"
+                           onchange="updateConfig('output_dir')">
+                </div>
+
+                <!-- Weights Path -->
+                <div class="slider-container">
+                    <label style="font-size: 12px; color: #aaa; text-transform: uppercase;">Model Weights</label>
+                    <input type="text" id="weights" value="models/best.pt" placeholder="Path to weights"
+                           onchange="updateConfig('weights')">
+                </div>
+
+                <!-- VLM Toggle -->
+                <div class="slider-container">
+                    <label style="font-size: 12px; color: #aaa; text-transform: uppercase; display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="use-vlm" onchange="updateConfig('use_vlm')">
+                        <span>Enable VLM Analysis</span>
+                    </label>
+                </div>
+
+                <!-- VLM Model Selection -->
+                <div class="slider-container">
+                    <label style="font-size: 12px; color: #aaa; text-transform: uppercase;">VLM Model</label>
+                    <select id="vlm-model" onchange="updateConfig('vlm_model')">
+                        <option value="paligemma">PaliGemma</option>
+                        <option value="llava">LLaVA</option>
+                        <option value="qwen">Qwen</option>
+                    </select>
+                </div>
+
+                <!-- Alert Classes -->
+                <div class="slider-container">
+                    <label style="font-size: 12px; color: #aaa; text-transform: uppercase;">Alert Classes (comma-separated)</label>
+                    <input type="text" id="alert-classes" placeholder="0,1" 
+                           onchange="updateConfig('alert_classes')">
                 </div>
             </div>
 
@@ -496,9 +630,9 @@
                     const alertData = await alertsRes.json();
                     
                     document.getElementById("frame-count").textContent = detData.frame_count;
-                    document.getElementById("detection-count").textContent = detData.detections.length;
+                    document.getElementById("detection-count").textContent = detData.unique_detections || 0;
+                    document.getElementById("alert-count").textContent = detData.session_alerts || 0;
                     document.getElementById("source-display").textContent = detData.source === "None" ? "-" : detData.source;
-                    document.getElementById("alert-count").textContent = alertData.length;
                     
                     updateAlertsList(alertData);
                 }
@@ -527,9 +661,79 @@
             `).join('');
         }
 
-        async function updateConfidence() {
-            const conf = document.getElementById("conf-slider").value;
-            document.getElementById("conf-value").textContent = conf;
+        async function updateConfig(key) {
+            try {
+                let value;
+                const element = document.getElementById(getElementId(key));
+                
+                // Get value based on element type
+                if (element.type === 'checkbox') {
+                    value = element.checked;
+                } else if (element.type === 'range') {
+                    value = key === 'alert_classes' ? element.value : 
+                            (key === 'imgsz' || key === 'persist_frames' || key === 'cooldown' || 
+                             key === 'stale_frames' || key === 'workers' ? 
+                             parseInt(element.value) : parseFloat(element.value));
+                } else if (key === 'alert_classes') {
+                    // Convert comma-separated string to array of integers
+                    value = element.value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+                } else {
+                    value = element.value;
+                }
+                
+                // Update display value if applicable
+                const displayElement = document.getElementById(getDisplayId(key));
+                if (displayElement) {
+                    displayElement.textContent = Array.isArray(value) ? value.join(',') : value;
+                }
+                
+                // Send to backend
+                const response = await fetch(`${API_BASE}/config`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ [key]: value })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(`Config updated: ${key} = ${value}`);
+                } else {
+                    console.error(`Failed to update ${key}`);
+                    alert(`Error updating ${key}`);
+                }
+            } catch (error) {
+                console.error(`Error updating config for ${key}:`, error);
+            }
+        }
+
+        function getElementId(key) {
+            const mapping = {
+                'confidence_threshold': 'conf-slider',
+                'device': 'device-select',
+                'imgsz': 'imgsz-slider',
+                'persist_frames': 'persist-slider',
+                'cooldown': 'cooldown-slider',
+                'stale_frames': 'stale-slider',
+                'output_dir': 'output-dir',
+                'workers': 'workers-slider',
+                'weights': 'weights',
+                'use_vlm': 'use-vlm',
+                'vlm_model': 'vlm-model',
+                'alert_classes': 'alert-classes'
+            };
+            return mapping[key] || key;
+        }
+
+        function getDisplayId(key) {
+            const mapping = {
+                'confidence_threshold': 'conf-value',
+                'imgsz': 'imgsz-value',
+                'persist_frames': 'persist-value',
+                'cooldown': 'cooldown-value',
+                'stale_frames': 'stale-value',
+                'workers': 'workers-value'
+            };
+            return mapping[key] || null;
         }
 
         async function start() {
@@ -602,8 +806,50 @@
             }
         }
 
+        // Load current config from backend
+        async function loadConfig() {
+            try {
+                const response = await fetch(`${API_BASE}/config`);
+                if (response.ok) {
+                    const config = await response.json();
+                    
+                    // Populate all config fields
+                    document.getElementById("conf-slider").value = config.confidence_threshold;
+                    document.getElementById("conf-value").textContent = config.confidence_threshold;
+                    
+                    document.getElementById("device-select").value = config.device;
+                    
+                    document.getElementById("imgsz-slider").value = config.imgsz;
+                    document.getElementById("imgsz-value").textContent = config.imgsz;
+                    
+                    document.getElementById("persist-slider").value = config.persist_frames;
+                    document.getElementById("persist-value").textContent = config.persist_frames;
+                    
+                    document.getElementById("cooldown-slider").value = config.cooldown;
+                    document.getElementById("cooldown-value").textContent = config.cooldown;
+                    
+                    document.getElementById("stale-slider").value = config.stale_frames;
+                    document.getElementById("stale-value").textContent = config.stale_frames;
+                    
+                    document.getElementById("workers-slider").value = config.workers;
+                    document.getElementById("workers-value").textContent = config.workers;
+                    
+                    document.getElementById("output-dir").value = config.output_dir;
+                    document.getElementById("weights").value = config.weights;
+                    document.getElementById("use-vlm").checked = config.use_vlm;
+                    document.getElementById("vlm-model").value = config.vlm_model;
+                    document.getElementById("alert-classes").value = config.alert_classes.join(',');
+                    
+                    console.log("Config loaded:", config);
+                }
+            } catch (error) {
+                console.error("Error loading config:", error);
+            }
+        }
+
         // Initial setup
         updateSourceInput();
+        loadConfig();
     </script>
 </body>
 </html>

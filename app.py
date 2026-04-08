@@ -31,6 +31,27 @@ current_frame = None
 frame_lock = threading.Lock()
 current_detections = []
 detection_lock = threading.Lock()
+unique_track_ids = set()  # Track unique detections
+track_lock = threading.Lock()
+session_alert_count = 0  # Count alerts in current session
+alert_count_lock = threading.Lock()
+
+# Global configuration state
+config_lock = threading.Lock()
+current_config = {
+    "confidence_threshold": 0.9,
+    "device": "cpu",
+    "imgsz": 640,
+    "alert_classes": [0, 1],
+    "persist_frames": 8,
+    "cooldown": 60,
+    "stale_frames": 30,
+    "output_dir": "alerts",
+    "workers": 4,
+    "weights": "models/best.pt",
+    "use_vlm": False,
+    "vlm_model": "paligemma"
+}
 
 
 def load_alert_history():
@@ -47,27 +68,39 @@ def load_alert_history():
 
 def run_detection_with_runner(source):
     """Run detection using original WeaponDetectionRunner."""
-    global is_running, frame_count, current_source, current_frame, current_detections
+    global is_running, frame_count, current_source, current_frame, current_detections, unique_track_ids, session_alert_count
     
     try:
         logger.info(f"Starting detection with source: {source}")
         current_source = str(source)
         frame_count = 0
         
-        # Build config with the provided source
+        # Reset unique track IDs for new detection session
+        with track_lock:
+            unique_track_ids.clear()
+        
+        # Reset alert count for new session
+        with alert_count_lock:
+            global session_alert_count
+            session_alert_count = 0
+        
+        # Build config with the provided source and current config
+        with config_lock:
+            cfg_copy = current_config.copy()
+        
         args = argparse.Namespace(
             source=source,
-            weights="models/best.pt",
-            conf=0.4,
-            alert_classes=[0, 1],
-            persist_frames=8,
-            cooldown=60,
-            stale_frames=30,
-            output_dir="alerts",
-            workers=4,
-            device="cpu",
-            use_vlm=False,
-            vlm_model="paligemma"
+            weights=cfg_copy["weights"],
+            conf=cfg_copy["confidence_threshold"],
+            alert_classes=cfg_copy["alert_classes"],
+            persist_frames=cfg_copy["persist_frames"],
+            cooldown=cfg_copy["cooldown"],
+            stale_frames=cfg_copy["stale_frames"],
+            output_dir=cfg_copy["output_dir"],
+            workers=cfg_copy["workers"],
+            device=cfg_copy["device"],
+            use_vlm=cfg_copy["use_vlm"],
+            vlm_model=cfg_copy["vlm_model"]
         )
         config = build_default_config(args)
         
@@ -119,6 +152,10 @@ def run_detection_with_runner(source):
                             conf = float(box.conf[0])
                             class_name = result.names[cls_id]
                             
+                            # Track unique detections
+                            with track_lock:
+                                unique_track_ids.add(track_id)
+                            
                             # Draw box on frame
                             runner._draw_box(frame, box, track_id, conf)
                             
@@ -140,6 +177,10 @@ def run_detection_with_runner(source):
                                     # Save snapshot
                                     snapshot = runner._snapshot_path(track_id)
                                     cv2.imwrite(str(snapshot), frame)
+                                    
+                                    # Increment session alert count
+                                    with alert_count_lock:
+                                        session_alert_count += 1
                                     
                                     # Dispatch alert
                                     event = AlertEvent(
@@ -190,11 +231,17 @@ def index():
 def get_detections():
     """Get current detections."""
     with detection_lock:
+        with track_lock:
+            unique_count = len(unique_track_ids)
+        with alert_count_lock:
+            session_alerts = session_alert_count
         return jsonify({
             "status": "running" if is_running else "stopped",
             "detections": current_detections.copy(),
             "frame_count": frame_count,
             "source": current_source or "None",
+            "unique_detections": unique_count,
+            "session_alerts": session_alerts,
             "timestamp": datetime.now().isoformat()
         })
 
@@ -284,25 +331,37 @@ def stop_detection():
 @app.route("/api/config", methods=["GET"])
 def get_config():
     """Get current configuration."""
-    return jsonify({
-        "confidence_threshold": 0.5,
-        "device": "auto",
-        "imgsz": 640,
-        "alert_classes": ["gun", "pistol", "knife"]
-    })
+    with config_lock:
+        return jsonify(current_config.copy())
 
 
 @app.route("/api/config", methods=["POST"])
 def set_config():
     """Update configuration."""
     data = request.json
+    
+    # Validate and update config
+    with config_lock:
+        for key, value in data.items():
+            if key in current_config:
+                # Type validation
+                if key == "alert_classes" and not isinstance(value, list):
+                    return jsonify({"error": f"Invalid type for {key}"}), 400
+                if key in ["confidence_threshold", "imgsz"] and not isinstance(value, (int, float)):
+                    return jsonify({"error": f"Invalid type for {key}"}), 400
+                
+                current_config[key] = value
+                logger.info(f"Config updated: {key} = {value}")
+            else:
+                logger.warning(f"Unknown config key: {key}")
+    
     logger.info(f"Configuration updated: {data}")
-    return jsonify({"status": "updated", "config": data})
+    return jsonify({"status": "updated", "config": current_config.copy()})
 
 
 if __name__ == "__main__":
     try:
         logger.info("Starting Flask server on http://0.0.0.0:5000")
-        app.run(debug=False, host="0.0.0.0", port=5000, threaded=True)
+        app.run(debug=True, host="0.0.0.0", port=5000, threaded=True)
     finally:
         is_running = False

@@ -99,7 +99,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Weapon detection with scalable alerting")
     parser.add_argument("--weights", type=str, default="models/best.pt", help="model path")
     parser.add_argument("--source", type=str, default="0", help="video source")
-    parser.add_argument("--conf", type=float, default=0.4, help="confidence threshold")
+    parser.add_argument("--conf", type=float, default=0.9, help="confidence threshold")
     parser.add_argument(
         "--alert_classes",
         type=int,
