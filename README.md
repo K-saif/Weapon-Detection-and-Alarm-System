@@ -10,11 +10,11 @@ By using Ultralytics YOLO real-time weapon detection with tracking, cooldown-bas
 ## <div>Quick Start</div>
 
 <details open>
-<summary><strong>Install</strong></summary>
-
-Create a Python environment (recommended) and install dependencies:
+<summary><strong>Clone and Install</strong></summary>
 
 ```bash
+git clone https://github.com/K-saif/Weapon-Detection-and-Alarm-System.git
+cd Weapon-Detection-and-Alarm-System
 pip install -r requirements.txt
 ```
 
