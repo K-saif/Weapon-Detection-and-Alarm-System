@@ -15,6 +15,9 @@ import os
 from weapon_detection.config import build_default_config
 from weapon_detection.runner import WeaponDetectionRunner
 from weapon_detection.events import AlertEvent
+from weapon_detection.vlm import load_model, query_model
+from weapon_detection.paligemma import load_model_pali, query_model_pali
+from weapon_detection.qwen import load_model_qwen, query_model_qwen
 
 app = Flask(__name__)
 CORS(app)
@@ -107,6 +110,19 @@ def run_detection_with_runner(source):
         
         # Create runner
         runner = WeaponDetectionRunner(config)
+
+        # Prepare VLM model once per session if enabled in UI config.
+        vlm_model = None
+        vlm_processor = None
+        if config.vlm.use_vlm:
+            if config.vlm.vlm_model == "llava":
+                vlm_model, vlm_processor = load_model()
+            elif config.vlm.vlm_model == "paligemma":
+                vlm_model, vlm_processor = load_model_pali()
+            elif config.vlm.vlm_model == "qwen":
+                vlm_model, vlm_processor = load_model_qwen()
+            else:
+                logger.warning(f"Unknown VLM model configured: {config.vlm.vlm_model}")
         
         # Open video capture
         cap = cv2.VideoCapture(config.inference.source)
@@ -190,12 +206,28 @@ def run_detection_with_runner(source):
                                         snapshot_path=snapshot,
                                         description=None,
                                     )
+                                    vlm_description = None
+                                    if config.vlm.use_vlm and vlm_model is not None:
+                                        try:
+                                            if config.vlm.vlm_model == "llava":
+                                                vlm_description = query_model(frame, vlm_model, vlm_processor)
+                                            elif config.vlm.vlm_model == "paligemma":
+                                                vlm_description = query_model_pali(frame, vlm_model, vlm_processor)
+                                            elif config.vlm.vlm_model == "qwen":
+                                                vlm_description = query_model_qwen(frame, vlm_model, vlm_processor)
+                                        except Exception as exc:
+                                            logger.exception("VLM query failed for track_id=%s: %s", track_id, exc)
+
+                                    event.description = vlm_description
                                     runner.dispatcher.dispatch(event)
                                     runner._append_alert_history({
                                         "snapshot_path": str(snapshot),
                                         "confidence": conf,
                                         "track_id": track_id,
                                         "frame_number": frame_num,
+                                        "timestamp": datetime.now().isoformat(),
+                                        "source": str(config.inference.source) if config.inference.source else None,
+                                        "description": vlm_description if config.vlm.use_vlm else None,
                                     })
                 
                 # Cleanup old tracks

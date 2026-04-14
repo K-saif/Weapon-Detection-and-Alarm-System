@@ -164,6 +164,8 @@ class WeaponDetectionRunner:
                         "confidence": conf,
                         "track_id": track_id,
                         "frame_number": frame_number,
+                        "timestamp": datetime.now().isoformat(),
+                        "source": self.cfg.inference.source if self.cfg.inference.source else None,
                         "description": vlm_description if self.cfg.vlm.use_vlm else None,
                     }
                     self._append_alert_history(alert_data)
