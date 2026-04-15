@@ -23,7 +23,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Setup logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # Global state
@@ -152,6 +152,7 @@ def run_detection_with_runner(source):
                     conf=config.inference.conf,
                     persist=True,
                     device=runner.detector_device,
+                    verbose=False,
                 )
                 
                 # Process results
@@ -199,13 +200,7 @@ def run_detection_with_runner(source):
                                     with alert_count_lock:
                                         session_alert_count += 1
                                     
-                                    # Dispatch alert
-                                    event = AlertEvent(
-                                        frame_number=frame_num,
-                                        track_id=track_id,
-                                        snapshot_path=snapshot,
-                                        description=None,
-                                    )
+
                                     vlm_description = None
                                     if config.vlm.use_vlm and vlm_model is not None:
                                         try:
@@ -215,10 +210,18 @@ def run_detection_with_runner(source):
                                                 vlm_description = query_model_pali(frame, vlm_model, vlm_processor)
                                             elif config.vlm.vlm_model == "qwen":
                                                 vlm_description = query_model_qwen(frame, vlm_model, vlm_processor)
+                                            
                                         except Exception as exc:
                                             logger.exception("VLM query failed for track_id=%s: %s", track_id, exc)
-
-                                    event.description = vlm_description
+                                    
+                                    # Dispatch alert
+                                    event = AlertEvent(
+                                        frame_number=frame_num,
+                                        track_id=track_id,
+                                        snapshot_path=snapshot,
+                                        description=vlm_description,
+                                    )
+                                    logger.debug(f"Dispatching alert event : {event}")    
                                     runner.dispatcher.dispatch(event)
                                     runner._append_alert_history({
                                         "snapshot_path": str(snapshot),
