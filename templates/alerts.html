@@ -512,6 +512,122 @@
             padding: 20px;
         }
 
+        /* Details Modal Styles */
+        .details-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .details-modal.active {
+            display: flex;
+        }
+
+        .details-content {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            background: #1a1f3a;
+            border-radius: 10px;
+            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(102, 126, 234, 0.3);
+            border: 1px solid #252d47;
+        }
+
+        .details-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            sticky: top 0;
+            z-index: 10001;
+        }
+
+        .details-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .details-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .details-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .details-body {
+            padding: 20px;
+        }
+
+        .details-field {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid #252d47;
+            gap: 15px;
+        }
+
+        .details-field:last-child {
+            border-bottom: none;
+        }
+
+        .details-field-label {
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            min-width: 150px;
+        }
+
+        .details-field-value {
+            color: #e0e0e0;
+            text-align: right;
+            flex: 1;
+            word-break: break-all;
+            padding: 4px 8px;
+            background: #252d47;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .details-field-value.image {
+            background: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+
+        .details-field-value.image img {
+            max-width: 100%;
+            border-radius: 6px;
+            border: 1px solid #444;
+            margin-top: 10px;
+        }
+
         @media (max-width: 768px) {
             .alerts-container {
                 grid-template-columns: 1fr;
@@ -565,6 +681,25 @@
                 padding: 10px;
                 bottom: 10px;
                 left: 10px;
+            }
+
+            .details-content {
+                width: 95%;
+                max-height: 90vh;
+            }
+
+            .details-field {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .details-field-label {
+                min-width: auto;
+            }
+
+            .details-field-value {
+                width: 100%;
+                text-align: left;
             }
         }
     </style>
@@ -640,6 +775,19 @@
         </div>
     </div>
 
+    <!-- Details Modal for Full Alert Information -->
+    <div class="details-modal" id="details-modal">
+        <div class="details-content">
+            <div class="details-header">
+                <h2>🔍 Alert Details</h2>
+                <button class="details-close" onclick="closeDetails()">✕</button>
+            </div>
+            <div class="details-body" id="details-body">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
     <div class="footer">
         <p>Weapon Detection System | Alerts Management Module</p>
     </div>
@@ -661,6 +809,13 @@
 
         function handleKeyboard(e) {
             const modal = document.getElementById('lightbox-modal');
+            const detailsModal = document.getElementById('details-modal');
+            
+            if (detailsModal.classList.contains('active')) {
+                if (e.key === 'Escape') closeDetails();
+                return;
+            }
+            
             if (!modal.classList.contains('active')) return;
             
             if (e.key === 'Escape') closeLightbox();
@@ -823,12 +978,60 @@
 
         function viewDetails(index) {
             const alert = allAlerts[index];
-            const message = `
-Track ID: ${alert.track_id}
-Frame: ${alert.frame_number}
-Confidence: ${(alert.confidence * 100).toFixed(1)}%
-Snapshot: ${alert.snapshot_path || 'N/A'}`;
-            alert(message);
+            const detailsBody = document.getElementById('details-body');
+            
+            // Filter out internal/empty fields and format the display
+            let detailsHTML = '';
+            
+            for (const [key, value] of Object.entries(alert)) {
+                if (value === null || value === undefined || value === '') continue;
+                
+                // Format the key name
+                const formattedKey = key
+                    .replace(/_/g, ' ')
+                    .replace(/([A-Z])/g, ' $1')
+                    .trim()
+                    .split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+                
+                // Format the value
+                let formattedValue = value;
+                let isImage = false;
+                
+                if (key === 'confidence') {
+                    formattedValue = (value * 100).toFixed(1) + '%';
+                } else if (key === 'snapshot_path' || key === 'image_path') {
+                    isImage = true;
+                    detailsHTML += `
+                        <div class="details-field">
+                            <div class="details-field-label">${formattedKey}</div>
+                            <div class="details-field-value image">
+                                <img src="${value}" alt="Alert snapshot" onerror="this.style.display='none';">
+                            </div>
+                        </div>
+                    `;
+                    continue;
+                }
+                
+                detailsHTML += `
+                    <div class="details-field">
+                        <div class="details-field-label">${formattedKey}</div>
+                        <div class="details-field-value">${formattedValue}</div>
+                    </div>
+                `;
+            }
+            
+            detailsBody.innerHTML = detailsHTML || '<p style="color: #999;">No details available</p>';
+            
+            // Show modal
+            document.getElementById('details-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetails() {
+            document.getElementById('details-modal').classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
 
         function downloadSnapshot(path, trackId) {
