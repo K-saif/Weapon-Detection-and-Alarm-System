@@ -114,6 +114,7 @@ you can download the [Custom Weapons Dataset](https://www.kaggle.com/datasets/sa
 
 After downloading, unzip the dataset and use the `train/images` and `train/labels` folders for training. You can also augment the dataset with your own images and annotations to improve performance.
 
+### Training
 For training custom models follow the [Ultralytics YOLO training guide](https://docs.ultralytics.com/training/). After training, paste your best.pt into [models folder](models/)  or use `weights=path/to/best.pt`.
 
 **Note:** This model was trained only for demonstration purposes on a small custom dataset. For best results, you should train on more representative dataset of weapons in various conditions.
