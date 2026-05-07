@@ -110,9 +110,15 @@ The pipeline includes:
 ## <div>Training Custom Models</div>
 
 ### Dataset
-you can download the [Custom Weapons Dataset](https://www.kaggle.com/datasets/saifkhan/custom-weapons-dataset) used for training you own model. It contains annotation of weapons with a total of 10330 images of various weapons in different environments and total object annotations of 11,056 in YOLO format.
+you can download the [Weapon Detection Dataset](https://drive.google.com/file/d/1NLUzqihgs6dSNqLQDlKqOrNKC2D59bCB/view?usp=sharing) used for training you own model. It contains annotation of weapons with a total of 10330 images of various weapons in different environments and total object annotations of 11,056 in YOLO format.
 
-After downloading, unzip the dataset and use the `train/images` and `train/labels` folders for training. You can also augment the dataset with your own images and annotations to improve performance.
+After downloading, unzip the dataset and use the `train/images` and `train/labels` folders for training. You can also augment the dataset with your own images and annotations to improve performance. create a data.yaml file with the following structure:
+
+```yaml 
+train: path/to/train/images
+val: path/to/val/images
+nc: 1
+names: ['weapon']
 
 ### Training
 For training custom models follow the [Ultralytics YOLO training guide](https://docs.ultralytics.com/training/). After training, paste your best.pt into [models folder](models/)  or use `weights=path/to/best.pt`.
