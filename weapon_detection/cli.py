@@ -21,6 +21,7 @@ def main() -> None:
     
     logger = logging.getLogger("weapon-detect")
     
+    print(sys.argv)
     # Check if multi-camera mode is requested
     if len(sys.argv) > 1 and sys.argv[1] == "multi":
         # Route to multi-camera CLI
