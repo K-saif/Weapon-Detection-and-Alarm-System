@@ -23,7 +23,7 @@ __pycache__/
 *.ppt
 *.pptx
 
-*.md
+
 # environment files
 .env
 venv/
