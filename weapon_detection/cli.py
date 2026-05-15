@@ -9,6 +9,7 @@ from weapon_detection.runner import WeaponDetectionRunner
 
 def main() -> None:
     """Runs CLI startup and starts detection pipeline."""
+    print("Starting Weapon Detection and Alarm System...")
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
@@ -26,6 +27,7 @@ def main() -> None:
         from weapon_detection.multi_camera_cli import main_multi_camera
         # Remove "multi" from argv before passing to multi_camera_cli
         sys.argv.pop(1)
+        print("Starting in multi-camera mode...")
         main_multi_camera()
     else:
         # Single camera mode (original behavior)

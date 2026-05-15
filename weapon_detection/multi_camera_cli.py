@@ -18,6 +18,7 @@ from weapon_detection.camera_cli import select_cameras_interactive, display_sele
 
 def main_multi_camera() -> None:
     """Entry point for multi-camera detection."""
+    print("Starting Multi-Camera Weapon Detection and Alarm System...")
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
@@ -31,7 +32,7 @@ def main_multi_camera() -> None:
     
     # Parse base CLI arguments
     args = parse_args()
-    
+    print(sys.argv)
     # Determine if we're running interactive multi-camera or single camera mode
     if len(sys.argv) > 1 and sys.argv[1] == "multi":
         # Interactive multi-camera mode
@@ -57,6 +58,7 @@ def main_multi_camera() -> None:
     
     else:
         # Single camera mode (original behavior)
+        print("Starting in single-camera mode...")
         config = build_default_config(args)
         logger.debug("Configs are: %s", config)
         WeaponDetectionRunner(config).run()
