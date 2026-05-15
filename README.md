@@ -4,6 +4,8 @@
 
 By using Ultralytics YOLO real-time weapon detection with tracking, cooldown-based alerts, persistence filtering, and multi-channel notifications (**Email**, **Telegram**). This Repo also Supports VLMs (**LLaVA**, **PaliGemma**, **Qwen**) for better insights of the incidents .
 
+![Project Overview](/templates/alert.jpeg)
+
 </div>
 
 
