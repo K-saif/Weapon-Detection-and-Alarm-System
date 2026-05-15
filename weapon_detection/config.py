@@ -47,6 +47,7 @@ class InferenceConfig:
     """Inference/runtime configuration."""
 
     source: int | str = 0
+    sources: tuple[int | str, ...] = ()  # Multiple sources for multi-camera mode
     weights: str = ""
     conf: float = 0.8
     alert_classes: tuple[int, ...] = (0, 1)
@@ -56,6 +57,7 @@ class InferenceConfig:
     output_dir: str = "alerts"
     workers: int = 4
     device: str = "cpu"
+    multi_camera_mode: bool = False  # Flag to enable multi-camera mode
 
 @dataclass(frozen=True)
 class EmailConfig:
