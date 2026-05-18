@@ -141,6 +141,13 @@ For training custom models follow the [Ultralytics YOLO training guide](https://
 |   |--dispatcher.py
 |   |--tracking.py
 |   |--runner.py
+|   |--vlm.py
+|--app.py
+|--requirements.txt
+|--main.py
+|--README.md
+|--DASHBOARD_README.md
+|--LICENSE
 
   ...
 ```
