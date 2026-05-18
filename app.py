@@ -15,9 +15,11 @@ import os
 from weapon_detection.config import build_default_config
 from weapon_detection.runner import WeaponDetectionRunner
 from weapon_detection.events import AlertEvent
-from weapon_detection.vlm import load_model, query_model
-from weapon_detection.paligemma import load_model_pali, query_model_pali
-from weapon_detection.qwen import load_model_qwen, query_model_qwen
+from weapon_detection.vlm import(
+    load_model, query_model, 
+    load_model_pali, query_model_pali, 
+    load_model_qwen, query_model_qwen
+)
 
 app = Flask(__name__)
 CORS(app)

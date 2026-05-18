@@ -15,10 +15,11 @@ from weapon_detection.config import AppConfig
 from weapon_detection.dispatcher import AlertDispatcher
 from weapon_detection.events import AlertEvent
 from weapon_detection.tracking import TrackLifecycle
-from weapon_detection.vlm import load_model, query_model
-from weapon_detection.paligemma import load_model_pali, query_model_pali
-from weapon_detection.qwen import load_model_qwen, query_model_qwen
-
+from weapon_detection.vlm import(
+    load_model, query_model, 
+    load_model_pali, query_model_pali, 
+    load_model_qwen, query_model_qwen
+)
 LOGGER = logging.getLogger("weapon-detect")
 
 
