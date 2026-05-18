@@ -125,7 +125,6 @@ names: ['weapon']
 ### Training
 For training custom models follow the [Ultralytics YOLO training guide](https://docs.ultralytics.com/training/). After training, paste your best.pt into [models folder](models/)  or use `weights=path/to/best.pt`.
 
-**Note:** This model was trained only for demonstration purposes on a small custom dataset. For best results, you should train on more representative dataset of weapons in various conditions.
 
 ## <div>Project Structure</div>
 
@@ -147,9 +146,9 @@ For training custom models follow the [Ultralytics YOLO training guide](https://
 ```
 
 
-## <div>Dashboard UI (Under Development)</div>
+## <div>Dashboard UI</div>
 
-A web-based dashboard is currently under development to provide real-time monitoring and visualization of weapon detection events. The dashboard will offer:
+A web-based dashboard to provide real-time monitoring and visualization of weapon detection events. The dashboard offers:
 
 - Real-time video feed with detection overlays
 - Live alert notifications and history
@@ -184,8 +183,9 @@ python main.py source=0 device=cpu conf=0.8 output_dir=alerts
 
 ## Future Enhancements
 - Add person detection and tracking to correlate weapons with individuals.
-- Implement a web dashboard for real-time monitoring and alert management.
 - Support for lightweight models like onnx or tflite for edge deployment.
+- Dockerization for easier setup and deployment.
+- Multi-camera support with centralized alert management.
 
 ## <div>Contributing</div>
 Contributions are welcome! Please open an issue or submit a pull request for bug fixes, improvements, or new features.
