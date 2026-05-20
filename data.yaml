@@ -1,0 +1,4 @@
+train: path/to/train/images
+val: path/to/val/images
+nc: 1
+names: ['weapon']

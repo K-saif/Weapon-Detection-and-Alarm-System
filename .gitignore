@@ -6,7 +6,7 @@
 __pycache__/
 *.csv
 *.jpg
-*.jpeg
+
 *.png
 *.bmp
 *.gif
