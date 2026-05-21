@@ -118,28 +118,25 @@ After downloading, unzip the dataset and use the `train/images` and `train/label
 
 ## <div>Project Structure</div>
 
-text
-|--main.py
-|--models/
-|   |--best.pt
-|--weapon_detection/
-|   |--__init__.py
-|   |--cli.py
-|   |--config.py
-|   |--events.py
-|   |--channels.py
-|   |--dispatcher.py
-|   |--tracking.py
-|   |--runner.py
-|   |--vlm.py
-|--app.py
-|--requirements.txt
-|--main.py
-|--README.md
-|--DASHBOARD_README.md
-|--LICENSE
-
-  ...
+```
+├── main.py
+├── models/
+│   └── best.pt
+├── weapon_detection/
+│   ├── __init__.py
+│   ├── cli.py
+│   ├── config.py
+│   ├── events.py
+│   ├── channels.py
+│   ├── dispatcher.py
+│   ├── tracking.py
+│   ├── runner.py
+│   └── vlm.py
+├── app.py
+├── requirements.txt
+├── README.md
+├── DASHBOARD_README.md
+└── LICENSE
 ```
 
 
