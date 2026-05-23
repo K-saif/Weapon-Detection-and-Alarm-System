@@ -116,6 +116,20 @@ you can download the [Weapon Detection Dataset](https://drive.google.com/file/d/
 
 After downloading, unzip the dataset and use the `train/images` and `train/labels` folders for training configure path into [data.yaml](data.yaml). You can also augment the dataset with your own images and annotations to improve performance.
 
+### Model Test Results
+The pre-trained model (`best.pt`) achieves excellent performance on the test set:
+
+| Metric | Value |
+|--------|-------|
+| **Images** | 1573 |
+| **Instances** | 1636 |
+| **Precision (P)** | 0.988 |
+| **Recall (R)** | 0.976 |
+| **mAP50** | 0.991 |
+| **mAP50-95** | 0.857 |
+
+These metrics demonstrate high detection accuracy with strong generalization across different environments.
+
 ## <div>Project Structure</div>
 
 ```
