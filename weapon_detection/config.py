@@ -29,13 +29,14 @@ def _normalize_key_value_args(raw_args: list[str], key_value_options: set[str]) 
             continue
 
         key, value = token.split("=", 1)
-        key_name = key.strip().lstrip("-").replace("_", "-")
-        if key_name not in key_value_options:
+        key_name = key.strip().lstrip("-")
+        normalized_key = key_name.replace("-", "_")
+        if normalized_key not in key_value_options:
             normalized_args.append(token)
             continue
 
-        normalized_args.append(f"--{key_name}")
-        if key_name == "alert-classes":
+        normalized_args.append(f"--{normalized_key}")
+        if normalized_key == "alert_classes":
             class_values = [part.strip() for part in value.split(",") if part.strip()]
             normalized_args.extend(class_values)
         else:

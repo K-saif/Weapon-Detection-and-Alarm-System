@@ -116,25 +116,33 @@ class WeaponDetectionRunner:
                     continue
 
                 for box, track_id_tensor in zip(boxes, boxes.id):
-                    track_id = int(track_id_tensor)
+                    raw_track_id = int(track_id_tensor)
                     cls_id = int(box.cls[0])
                     conf = float(box.conf[0])
-                    self.tracks.update_seen(track_id, frame_number)
+                    stable_track_id = self.tracks.assign_stable_id(
+                        raw_track_id=raw_track_id,
+                        frame_number=frame_number,
+                        box_xyxy=box.xyxy[0].tolist(),
+                        class_id=cls_id,
+                    )
 
                     if cls_id not in alert_classes:
                         continue
 
-                    self._draw_box(frame, box, track_id, conf)
-                    self.tracks.increment_persistence(track_id)
+                    self._draw_box(frame, box, stable_track_id, conf)
+                    self.tracks.increment_persistence(stable_track_id)
 
-                    if not self.tracks.can_alert(track_id):
+                    if not self.tracks.can_alert(stable_track_id):
                         continue
 
-                    snapshot = self._snapshot_path(track_id)
+                    snapshot = self._snapshot_path(stable_track_id)
                     cv2.imwrite(str(snapshot), frame)
 
                     LOGGER.warning(
-                        "Weapon detected | track_id=%d frame=%d", track_id, frame_number
+                        "Weapon detected | track_id=%d raw_track_id=%d frame=%d",
+                        stable_track_id,
+                        raw_track_id,
+                        frame_number,
                     )
                     
                     vlm_description = None
@@ -147,14 +155,14 @@ class WeaponDetectionRunner:
                             elif self.cfg.vlm.vlm_model == "qwen":
                                 vlm_description = query_model_qwen(frame, vlm_model, vlm_processor)
                         except Exception as exc:
-                            LOGGER.exception("VLM query failed for track_id=%d: %s", track_id, exc)
+                            LOGGER.exception("VLM query failed for track_id=%d: %s", stable_track_id, exc)
 
                     if vlm_description:
-                        LOGGER.info("VLM description for track_id=%d: %s", track_id, vlm_description)
+                        LOGGER.info("VLM description for track_id=%d: %s", stable_track_id, vlm_description)
 
                     event = AlertEvent(
                         frame_number=frame_number,
-                        track_id=track_id,
+                        track_id=stable_track_id,
                         snapshot_path=snapshot,
                         description=vlm_description,
                     )
@@ -163,7 +171,8 @@ class WeaponDetectionRunner:
                     alert_data = {
                         "snapshot_path": str(snapshot),
                         "confidence": conf,
-                        "track_id": track_id,
+                        "track_id": stable_track_id,
+                        "raw_track_id": raw_track_id,
                         "frame_number": frame_number,
                         "timestamp": datetime.now().isoformat(),
                         "source": self.cfg.inference.source if self.cfg.inference.source else None,
