@@ -221,6 +221,9 @@ Contributions are welcome! Please open an issue or submit a pull request for bug
    <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=K-saif/Weapon-Detection-and-Alarm-System&type=date&legend=top-left" />
  </picture>
 </a>
+
 ## <div>License</div>
 
 This project is licensed under the [MIT License](LICENSE).
+
+please consider starring the repository if you find it useful! ⭐
