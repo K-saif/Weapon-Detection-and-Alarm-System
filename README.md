@@ -109,6 +109,20 @@ The pipeline includes:
 
 </details>
 
+## <div>Visual Language Models (VLMs)</div>
+The system can query VLMs for enhanced incident insights. below is an example of how to enable VLM querying for detected weapons:
+
+```bash
+python main.py source=path/to/video.mp4 conf=0.8 device=cgpu use_vlm=True vlm_model=qwen
+```
+**Image:**
+
+![Alert](/templates/qwen.jpeg)
+
+**Qwen Description: The person holding the weapon is a man standing in a pharmacy. He is wearing a baseball cap with black t-shirt and jeans. The man appears to be holding a small pistol or a similar weapon, which is pointed towards another person.**
+
+
+
 ## <div>Training Custom Models</div>
 
 ### Dataset
@@ -188,6 +202,7 @@ Example:
 ```bash
 python main.py source=0 device=cpu conf=0.8 output_dir=alerts
 ```
+
 
 ## Future Enhancements
 - Add person detection and tracking to correlate weapons with individuals.
