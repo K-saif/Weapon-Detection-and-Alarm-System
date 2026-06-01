@@ -213,6 +213,14 @@ python main.py source=0 device=cpu conf=0.8 output_dir=alerts
 ## <div>Contributing</div>
 Contributions are welcome! Please open an issue or submit a pull request for bug fixes, improvements, or new features.
 
+## Star History
+<a href="https://www.star-history.com/?repos=K-saif%2FWeapon-Detection-and-Alarm-System&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=K-saif/Weapon-Detection-and-Alarm-System&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=K-saif/Weapon-Detection-and-Alarm-System&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=K-saif/Weapon-Detection-and-Alarm-System&type=date&legend=top-left" />
+ </picture>
+</a>
 ## <div>License</div>
 
 This project is licensed under the [MIT License](LICENSE).
