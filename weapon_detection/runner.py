@@ -20,6 +20,10 @@ from weapon_detection.vlm import(
     load_model_pali, query_model_pali, 
     load_model_qwen, query_model_qwen
 )
+
+from concurrent.futures import ThreadPoolExecutor
+from threading import Lock
+
 LOGGER = logging.getLogger("weapon-detect")
 
 
@@ -43,6 +47,11 @@ class WeaponDetectionRunner:
             cooldown_seconds=self.cfg.inference.cooldown_seconds,
             stale_frames=self.cfg.inference.stale_frames,
         )
+        self.alert_executor = ThreadPoolExecutor(
+        max_workers=1
+        )
+        self.json_lock = Lock()
+
 
     def _snapshot_path(self, track_id: int) -> Path:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -52,21 +61,39 @@ class WeaponDetectionRunner:
         return self.output_dir / f"Alert_history.json"
 
     def _append_alert_history(self, alert_data: dict[str, object]) -> None:
-        json_path = self._json_path()
-        history: list[dict[str, object]] = []
-        if json_path.exists():
-            raw_content = json_path.read_text(encoding="utf-8").strip()
-            if raw_content:
-                parsed = json.loads(raw_content)
-                if isinstance(parsed, list):
-                    history = [item for item in parsed if isinstance(item, dict)]
-                elif isinstance(parsed, dict):
-                    history = [parsed]
-        history.append(alert_data)
-        json_path.write_text(
-            json.dumps(history, ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
+        with self.json_lock:
+            json_path = self._json_path()
+
+            history: list[dict[str, object]] = []
+
+            if json_path.exists():
+                raw_content = json_path.read_text(
+                    encoding="utf-8"
+                ).strip()
+
+                if raw_content:
+                    parsed = json.loads(raw_content)
+
+                    if isinstance(parsed, list):
+                        history = [
+                            item
+                            for item in parsed
+                            if isinstance(item, dict)
+                        ]
+
+                    elif isinstance(parsed, dict):
+                        history = [parsed]
+
+            history.append(alert_data)
+
+            json_path.write_text(
+                json.dumps(
+                    history,
+                    ensure_ascii=False,
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
 
     def _draw_box(self, frame, box, track_id: int, conf: float) -> None:
         x1, y1, x2, y2 = map(int, box.xyxy[0])
@@ -80,6 +107,96 @@ class WeaponDetectionRunner:
             (0, 0, 255),
             2,
         )
+
+    def _process_alert(
+        self,
+        frame,
+        snapshot,
+        conf,
+        stable_track_id,
+        raw_track_id,
+        frame_number,
+        vlm_model,
+        vlm_processor,
+    ):
+        try:
+
+            cv2.imwrite(str(snapshot), frame)
+
+            LOGGER.warning(
+                "Weapon detected | track_id=%d raw_track_id=%d frame=%d",
+                stable_track_id,
+                raw_track_id,
+                frame_number,
+            )
+
+            vlm_description = None
+
+            if self.cfg.vlm.use_vlm:
+                try:
+
+                    if self.cfg.vlm.vlm_model == "llava":
+                        vlm_description = query_model(
+                            frame,
+                            vlm_model,
+                            vlm_processor,
+                        )
+
+                    elif self.cfg.vlm.vlm_model == "paligemma":
+                        vlm_description = query_model_pali(
+                            frame,
+                            vlm_model,
+                            vlm_processor,
+                        )
+
+                    elif self.cfg.vlm.vlm_model == "qwen":
+                        vlm_description = query_model_qwen(
+                            frame,
+                            vlm_model,
+                            vlm_processor,
+                        )
+
+                except Exception as exc:
+                    LOGGER.exception(
+                        "VLM query failed for track_id=%d: %s",
+                        stable_track_id,
+                        exc,
+                    )
+
+            if vlm_description:
+                LOGGER.info(
+                    "VLM description for track_id=%d: %s",
+                    stable_track_id,
+                    vlm_description,
+                )
+
+            event = AlertEvent(
+                frame_number=frame_number,
+                track_id=stable_track_id,
+                snapshot_path=snapshot,
+                description=vlm_description,
+            )
+
+            self.dispatcher.dispatch(event)
+
+            alert_data = {
+                "snapshot_path": str(snapshot),
+                "confidence": conf,
+                "track_id": stable_track_id,
+                "raw_track_id": raw_track_id,
+                "frame_number": frame_number,
+                "timestamp": datetime.now().isoformat(),
+                "source": self.cfg.inference.source,
+                "description": vlm_description,
+            }
+
+            self._append_alert_history(alert_data)
+
+        except Exception:
+            LOGGER.exception(
+                "Failed processing alert for track_id=%d",
+                stable_track_id,
+            )
 
     def run(self) -> None:
         """Executes video capture, tracking, and alert emission loop."""
@@ -134,52 +251,23 @@ class WeaponDetectionRunner:
 
                     if not self.tracks.can_alert(stable_track_id):
                         continue
-
                     snapshot = self._snapshot_path(stable_track_id)
-                    cv2.imwrite(str(snapshot), frame)
 
-                    LOGGER.warning(
-                        "Weapon detected | track_id=%d raw_track_id=%d frame=%d",
+                    # CRITICAL:
+                    # copy frame before next loop iteration
+                    frame_copy = frame.copy()
+
+                    self.alert_executor.submit(
+                        self._process_alert,
+                        frame_copy,
+                        snapshot,
+                        conf,
                         stable_track_id,
                         raw_track_id,
                         frame_number,
+                        vlm_model,
+                        vlm_processor,
                     )
-                    
-                    vlm_description = None
-                    if self.cfg.vlm.use_vlm:
-                        try:
-                            if self.cfg.vlm.vlm_model == "llava":
-                                vlm_description = query_model(frame, vlm_model, vlm_processor)
-                            elif self.cfg.vlm.vlm_model == "paligemma":
-                                vlm_description = query_model_pali(frame, vlm_model, vlm_processor)
-                            elif self.cfg.vlm.vlm_model == "qwen":
-                                vlm_description = query_model_qwen(frame, vlm_model, vlm_processor)
-                        except Exception as exc:
-                            LOGGER.exception("VLM query failed for track_id=%d: %s", stable_track_id, exc)
-
-                    if vlm_description:
-                        LOGGER.info("VLM description for track_id=%d: %s", stable_track_id, vlm_description)
-
-                    event = AlertEvent(
-                        frame_number=frame_number,
-                        track_id=stable_track_id,
-                        snapshot_path=snapshot,
-                        description=vlm_description,
-                    )
-                    self.dispatcher.dispatch(event)
-                    
-                    alert_data = {
-                        "snapshot_path": str(snapshot),
-                        "confidence": conf,
-                        "track_id": stable_track_id,
-                        "raw_track_id": raw_track_id,
-                        "frame_number": frame_number,
-                        "timestamp": datetime.now().isoformat(),
-                        "source": self.cfg.inference.source if self.cfg.inference.source else None,
-                        "description": vlm_description if self.cfg.vlm.use_vlm else None,
-                    }
-                    self._append_alert_history(alert_data)
-
                     
             self.tracks.cleanup(frame_number)
             cv2.imshow("Weapon Detection + Tracking", frame)
@@ -189,4 +277,11 @@ class WeaponDetectionRunner:
 
         cap.release()
         cv2.destroyAllWindows()
+
+        LOGGER.info("Waiting for pending alerts...")
+
+        self.alert_executor.shutdown(
+            wait=True
+        )
+
         self.dispatcher.close()
