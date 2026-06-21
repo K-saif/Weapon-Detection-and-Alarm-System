@@ -6,7 +6,10 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-
+try:
+    import winsound
+except ImportError:  # pragma: no cover - non-Windows fallback
+    winsound = None
 import cv2
 from ultralytics import YOLO
 
@@ -107,6 +110,15 @@ class WeaponDetectionRunner:
             (0, 0, 255),
             2,
         )
+    def _play_system_alert_sound(self) -> None:
+        """Plays a short blocking system alert sound before channel dispatch."""
+        if winsound is None:
+            return
+
+        try:
+            winsound.Beep(1200, 2000)
+        except RuntimeError as exc:
+            LOGGER.warning("Alert sound failed: %s", exc)
 
     def _process_alert(
         self,
@@ -225,6 +237,7 @@ class WeaponDetectionRunner:
                 conf=self.cfg.inference.conf,
                 persist=True,
                 device=self.detector_device,
+                verbose=False,
             )
 
             for result in results:
@@ -256,7 +269,7 @@ class WeaponDetectionRunner:
                     # CRITICAL:
                     # copy frame before next loop iteration
                     frame_copy = frame.copy()
-
+                    self._play_system_alert_sound()
                     self.alert_executor.submit(
                         self._process_alert,
                         frame_copy,
